@@ -3,12 +3,15 @@ declare global {
     type ChartType = "bar" | "line" | "scatter"
     type AppState = {
         statType:StatType|null,
-        chartType:ChartType|null
+        chartType:ChartType|null,
+        player:string|null,
+        stateID:number
     }
 
     type ActionPayload = {
         statType?:StatType,
-        chartType?:ChartType
+        chartType?:ChartType,
+        player?:string
     }
 
     type StateAction = {

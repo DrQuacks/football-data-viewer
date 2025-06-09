@@ -1,4 +1,6 @@
 export const initialAppState:AppState = {
     statType:null,
-    chartType:null
+    chartType:null,
+    player:null,
+    stateID:1
 }

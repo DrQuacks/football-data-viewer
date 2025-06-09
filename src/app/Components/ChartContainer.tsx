@@ -26,7 +26,7 @@ export function ChartContainer() {
 
   return (
     <div className='mx-6'>
-      <h1>Top 10 Receiving Yards - 2024</h1>
+      <h1 className='text-center'>Top 10 Receiving Yards - 2024</h1>
       <Chart data={data} />
     </div>
   );

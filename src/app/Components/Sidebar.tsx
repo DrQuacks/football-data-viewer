@@ -1,16 +1,12 @@
 import { Dropdown } from "./Dropdown"
+import { StatTypeDropdown } from "./StatTypeDropdown"
+import { PlayerDropdown } from "./PlayerDropdown"
 
 export const Sidebar = () => {
     return (
         <div className="mx-6">
-            <Dropdown
-            name='Stat Type'
-            set={['Receiving','Rushing','Passing']}
-            />
-            <Dropdown
-            name='Player'
-            set={['Receiving','Rushing','Passing']}
-            />
+            <StatTypeDropdown/>
+            <PlayerDropdown/>
             <Dropdown
             name='Start Year'
             set={['Receiving','Rushing','Passing']}
