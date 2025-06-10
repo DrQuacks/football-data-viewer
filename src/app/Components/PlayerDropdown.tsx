@@ -5,7 +5,6 @@ import {
   Autocomplete,
   TextField
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { AppContext } from "./AppState";
 
 const PAGE_SIZE = 20;
@@ -55,10 +54,8 @@ export const PlayerDropdown = () => {
   return (
     <Autocomplete
       fullWidth
-      freeSolo
       options={options}
       value={value}
-      popupIcon={<ExpandMoreIcon />} // ✅ Forces the dropdown arrow
       onChange={(e, newValue) => {
         setValue(newValue);
         if (newValue) {
