@@ -5,6 +5,8 @@ declare global {
         statType:StatType|null,
         chartType:ChartType|null,
         player:string|null,
+        startYear:number,
+        endYear:number,
         stateID:number
     }
 

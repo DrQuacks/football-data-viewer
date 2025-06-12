@@ -52,34 +52,36 @@ export const PlayerDropdown = () => {
   };
 
   return (
-    <Autocomplete
-      fullWidth
-      options={options}
-      value={value}
-      onChange={(e, newValue) => {
-        setValue(newValue);
-        if (newValue) {
-          dispatch({ type: "update_player", payload: { player: newValue } });
-        }
-      }}
-      onInputChange={(e, inputValue) => {
-        setQuery(inputValue.toLowerCase());
-        setOptions([]);
-        setOffset(0);
-        setHasMore(true);
-      }}
-      ListboxProps={{
-        onScroll: handleScroll,
-        ref: listboxRef,
-        style: { maxHeight: 300, overflowY: "auto" },
-      }}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Player"
+    <div className='my-2'>
+        <Autocomplete
+        fullWidth
+        options={options}
+        value={value}
+        onChange={(e, newValue) => {
+            setValue(newValue);
+            if (newValue) {
+            dispatch({ type: "update_player", payload: { player: newValue } });
+            }
+        }}
+        onInputChange={(e, inputValue) => {
+            setQuery(inputValue.toLowerCase());
+            setOptions([]);
+            setOffset(0);
+            setHasMore(true);
+        }}
+        ListboxProps={{
+            onScroll: handleScroll,
+            ref: listboxRef,
+            style: { maxHeight: 300, overflowY: "auto" },
+        }}
+        loading={loading}
+        renderInput={(params) => (
+            <TextField
+            {...params}
+            label="Player"
+            />
+        )}
         />
-      )}
-    />
+    </div>
   );
 };

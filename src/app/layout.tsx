@@ -13,7 +13,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
         <div>
           <AppContextProvider>
-            <h1 className="text-left text-5xl my-6 mx-6 text-sky-700 font-extrabold">Football Stats</h1>
+            <h1 className="text-left text-5xl my-6 mx-6 text-sky-700 font-extrabold border-b-2">Football Stats</h1>
             {children}
           </AppContextProvider>
         </div>

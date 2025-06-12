@@ -1,6 +1,7 @@
 import { Dropdown } from "./Dropdown"
 import { StatTypeDropdown } from "./StatTypeDropdown"
 import { PlayerDropdown } from "./PlayerDropdown"
+import { constants } from "../constants"
 
 export const Sidebar = () => {
     return (
@@ -8,12 +9,14 @@ export const Sidebar = () => {
             <StatTypeDropdown/>
             <PlayerDropdown/>
             <Dropdown
-            name='Start Year'
-            set={['Receiving','Rushing','Passing']}
+                name='Start Year'
+                set={constants.FULL_YEARS}
+                message="update_start_year"
             />
             <Dropdown
-            name='End Year'
-            set={['Receiving','Rushing','Passing']}
+                name='End Year'
+                set={constants.FULL_YEARS}
+                message="update_end_year"
             />
         </div>
     )
