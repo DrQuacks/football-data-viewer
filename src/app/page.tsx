@@ -1,5 +1,5 @@
 import { Sidebar } from "./Components/Sidebar"
-import { ChartContainer } from "./Components/ChartContainer"
+import { ChartsContainer } from "./Components/ChartsContainer"
 export default function Home() {
   return(
     <div className="flex w-full min-w-0">
@@ -7,7 +7,7 @@ export default function Home() {
         <Sidebar/>
       </div>
       <div className="w-3/4">
-        <ChartContainer/>
+        <ChartsContainer/>
       </div>
     </div>
   )

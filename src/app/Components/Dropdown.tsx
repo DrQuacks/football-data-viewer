@@ -10,12 +10,13 @@ import { AppContext } from './AppState';
 
 export const Dropdown = ({name,set}:{name:string,set:number[]}) => {
     const {dispatch,appState} = use(AppContext)!
-    const mssg = name === "Start Year" ? "update_start_year" : "update_end_year"
+    const type = name === "Start Year" ? "update_start_year" : "update_end_year"
     const initVal = name === "Start Year" ? appState.startYear : appState.endYear
     const [value,setValue] = useState<number | null>(initVal)
-    const handleChange = (event: SelectChangeEvent) => {
-        const year = event.target.value.isNull() ?  +event.target.value
+    const handleChange = (event: SelectChangeEvent<number | null>) => {
+        const year = event.target.value as number | null
         setValue(year as number | null);
+        dispatch({type,payload:{year}})
         if (name === "Start Year") {
             dispatch({type:"update_start_year",payload:{year}})
         } else if (name === "End Year") {
@@ -29,7 +30,7 @@ export const Dropdown = ({name,set}:{name:string,set:number[]}) => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={value}
+                    value={value || ""}
                     label={name}
                     onChange={handleChange}
                     MenuProps={{

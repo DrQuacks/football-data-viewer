@@ -14,7 +14,7 @@ declare global {
         statType?:StatType,
         chartType?:ChartType,
         player?:string,
-        year?:number
+        year?:number|null
     }
 
     type StateAction = {

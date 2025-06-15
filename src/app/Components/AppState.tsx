@@ -39,6 +39,12 @@ const reducer = (appState:AppState, action:StateAction) => {
             }
             return appState
         }
+        case "update_player":{
+            if (payload.player) {
+                return {...appState,player:payload.player,stateID:newID}
+            }
+            return appState
+        }
     }
     return appState
 }

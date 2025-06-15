@@ -60,7 +60,7 @@ export const PlayerDropdown = () => {
         onChange={(e, newValue) => {
             setValue(newValue);
             if (newValue) {
-            dispatch({ type: "update_player", payload: { player: newValue } });
+                dispatch({ type: "update_player", payload: { player: newValue } });
             }
         }}
         onInputChange={(e, inputValue) => {
