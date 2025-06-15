@@ -11,12 +11,10 @@ export const Sidebar = () => {
             <Dropdown
                 name='Start Year'
                 set={constants.FULL_YEARS}
-                message="update_start_year"
             />
             <Dropdown
                 name='End Year'
                 set={constants.FULL_YEARS}
-                message="update_end_year"
             />
         </div>
     )

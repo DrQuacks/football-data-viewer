@@ -1,17 +1,26 @@
 "use client"
 
-import {useState} from 'react'
+import {useState,use} from 'react'
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { AppContext } from './AppState';
 
 
-export const Dropdown = ({name,set,stateAction}:{name:string,set:number[],stateAction:StateAction}) => {
-
-    const [value,setValue] = useState<string>("")
+export const Dropdown = ({name,set}:{name:string,set:number[]}) => {
+    const {dispatch,appState} = use(AppContext)!
+    const mssg = name === "Start Year" ? "update_start_year" : "update_end_year"
+    const initVal = name === "Start Year" ? appState.startYear : appState.endYear
+    const [value,setValue] = useState<number | null>(initVal)
     const handleChange = (event: SelectChangeEvent) => {
-        setValue(event.target.value as string);
+        const year = event.target.value.isNull() ?  +event.target.value
+        setValue(year as number | null);
+        if (name === "Start Year") {
+            dispatch({type:"update_start_year",payload:{year}})
+        } else if (name === "End Year") {
+            dispatch({type:"update_start_year",payload:{year}})
+        }
       };
     return (
         <div className='my-2'>
