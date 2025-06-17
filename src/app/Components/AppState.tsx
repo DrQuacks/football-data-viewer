@@ -39,6 +39,12 @@ const reducer = (appState:AppState, action:StateAction) => {
             }
             return appState
         }
+        case "update_available_years":{
+            if (payload.availableYears) {
+                return {...appState,availableYears:payload.availableYears,stateID:newID}
+            }
+            return appState
+        }
         case "update_player":{
             if (payload.player) {
                 return {...appState,player:payload.player,stateID:newID}

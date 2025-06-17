@@ -20,7 +20,7 @@ export const Dropdown = ({name,set}:{name:string,set:number[]}) => {
         if (name === "Start Year") {
             dispatch({type:"update_start_year",payload:{year}})
         } else if (name === "End Year") {
-            dispatch({type:"update_start_year",payload:{year}})
+            dispatch({type:"update_end_year",payload:{year}})
         }
       };
     return (

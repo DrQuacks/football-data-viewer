@@ -4,9 +4,11 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 export function RecYardsBarChart({
-  data
+  data,
+  years
 }: {
-  data: { season: number; yards: number }[]
+  data: { season: number; yards: number }[],
+  years: number[]
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -25,7 +27,8 @@ export function RecYardsBarChart({
 
       const x = d3
         .scaleBand()
-        .domain(data.map((d) => d.season.toString()))
+        // .domain(data.map((d) => d.season.toString()))
+        .domain(years.map(y => y.toString()))
         .range([margin.left, containerWidth - margin.right])
         .padding(0.1);
   

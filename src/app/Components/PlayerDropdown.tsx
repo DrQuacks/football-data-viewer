@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, use } from "react";
+import { useEffect, useRef, useState, use , SyntheticEvent } from "react";
 import {
   Autocomplete,
   TextField
@@ -51,18 +51,20 @@ export const PlayerDropdown = () => {
     }
   };
 
+  const handleChange = (e: SyntheticEvent<Element, Event>, newValue:string|null) => {
+    setValue(newValue);
+    if (newValue) {
+        dispatch({ type: "update_player", payload: { player: newValue } });
+    }
+}
+
   return (
     <div className='my-2'>
         <Autocomplete
         fullWidth
         options={options}
         value={value}
-        onChange={(e, newValue) => {
-            setValue(newValue);
-            if (newValue) {
-                dispatch({ type: "update_player", payload: { player: newValue } });
-            }
-        }}
+        onChange={handleChange}
         onInputChange={(e, inputValue) => {
             setQuery(inputValue.toLowerCase());
             setOptions([]);

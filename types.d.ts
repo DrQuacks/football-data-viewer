@@ -7,6 +7,7 @@ declare global {
         player:string|null,
         startYear:number|null,
         endYear:number|null,
+        availableYears:number[],
         stateID:number
     }
 
@@ -14,7 +15,8 @@ declare global {
         statType?:StatType,
         chartType?:ChartType,
         player?:string,
-        year?:number|null
+        year?:number|null,
+        availableYears?:number[]|null
     }
 
     type StateAction = {

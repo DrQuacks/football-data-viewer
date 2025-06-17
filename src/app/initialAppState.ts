@@ -1,4 +1,4 @@
-
+import { constants } from "./constants"
 
 export const initialAppState:AppState = {
     statType:null,
@@ -6,5 +6,6 @@ export const initialAppState:AppState = {
     player:null,
     startYear:null,
     endYear:null,
+    availableYears:constants.FULL_YEARS,
     stateID:1
 }
