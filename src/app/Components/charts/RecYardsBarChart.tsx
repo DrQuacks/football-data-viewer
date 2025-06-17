@@ -27,7 +27,6 @@ export function RecYardsBarChart({
 
       const x = d3
         .scaleBand()
-        // .domain(data.map((d) => d.season.toString()))
         .domain(years.map(y => y.toString()))
         .range([margin.left, containerWidth - margin.right])
         .padding(0.1);
@@ -85,7 +84,7 @@ export function RecYardsBarChart({
         window.removeEventListener('resize', draw); // Cleanup on unmount
     };
 
-  }, [data]);
+  }, [data,years]);
 
   return <svg ref={svgRef} width="100%" height="100%"></svg>;
 }
