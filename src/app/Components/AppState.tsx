@@ -52,6 +52,12 @@ const reducer = (appState:AppState, action:StateAction):AppState => {
             }
             return appState
         }
+        case "update_stat":{
+            if (payload.stat || payload.stat === null) {
+                return {...appState,stat:payload.stat,lastChange:payload,stateID:newID}
+            }
+            return appState
+        }
     }
     return appState
 }

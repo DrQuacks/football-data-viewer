@@ -11,21 +11,19 @@ export const ChartsContainer = () => {
   const [availableData, setAvailableData] = useState<{ season: number; yards: number }[]>([]);
   const [years, setYears] = useState<number[]>(appState.availableYears);
 
-  useEffect(() => {
-    if (!appState.player) return;
+useEffect(() => {
+  if (!appState.player) return;
 
-    fetch(`/api/receiving/player-stats?player=${encodeURIComponent(appState.player)}`)
-      .then((res) => res.json())
-      .then((d) => {
-        setData(d);
-        setAvailableData(d)
-        // Generate the set of years dynamically
-        const uniqueYears:number[] = Array.from(new Set<number>(d.map((row: { season: number; yards?: number }) => row.season))).sort((a, b) => a - b);        
-        setYears(uniqueYears);
-        dispatch({ type: "update_available_years", payload: { availableYears: uniqueYears } });
-        console.log('unique years are: ',uniqueYears)
-      });  
-},[appState.player,dispatch]);
+  fetch(`/api/receiving/player-stats?player=${encodeURIComponent(appState.player)}&stat=${encodeURIComponent(appState.stat || "yards")}`)
+    .then((res) => res.json())
+    .then((d) => {
+      setData(d);
+      setAvailableData(d);
+      const uniqueYears: number[] = Array.from(new Set<number>(d.map((row: { season: number }) => row.season))).sort((a, b) => a - b);
+      setYears(uniqueYears);
+      dispatch({ type: "update_available_years", payload: { availableYears: uniqueYears } });
+    });
+}, [appState.player, appState.stat, dispatch]);
 
 useEffect(() => {
     const safeStart:number = appState.startYear || constants.START_YEAR
@@ -43,7 +41,7 @@ useEffect(() => {
   return (
     <div>
       <h2>{appState.player} Receiving Yards by Season</h2>
-      <RecYardsBarChart data={availableData} years={years} />
+      <RecYardsBarChart data={data} years={years} stat={appState.stat || "yards"} />    
     </div>
   );
 };

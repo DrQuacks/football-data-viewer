@@ -2,6 +2,17 @@ import { NextRequest } from 'next/server';
 import { Client } from 'pg';
 import 'dotenv/config';
 
+async function getAllowedStats(client: Client): Promise<string[]> {
+  const sql = `
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_name = 'receiving_stats'
+      AND data_type IN ('integer', 'numeric', 'double precision', 'real')
+      AND column_name NOT IN ('season', 'age');
+  `;
+  const result = await client.query(sql);
+  return result.rows.map(r => r.column_name);
+}
 
 export async function GET(req: NextRequest) {
     console.log('req: ',req)
@@ -47,12 +58,20 @@ export async function GET(req: NextRequest) {
 
         const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
+        const stat = searchParams.get("stat") || "yards"; // default to yards if not provided
+
+        // Validate stat to prevent SQL injection
+        const allowedStats = await getAllowedStats(client);
+        if (!allowedStats.includes(stat)) {
+        return new Response("Invalid stat column", { status: 400 });
+        }
+
         const sql = `
             SELECT player
             FROM receiving_stats
             ${whereSQL}
             GROUP BY player
-            ORDER BY SUM(yards) DESC
+            ORDER BY SUM(${stat}) DESC
             LIMIT $${paramIdx} OFFSET $${paramIdx + 1}
         `;
         console.log('sql is: ', sql, 'params are: ', params)

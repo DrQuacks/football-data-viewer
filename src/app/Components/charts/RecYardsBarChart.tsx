@@ -5,10 +5,12 @@ import * as d3 from 'd3';
 
 export function RecYardsBarChart({
   data,
-  years
+  years,
+  stat
 }: {
-  data: { season: number; yards: number }[],
-  years: number[]
+  data: { season: number; [key: string]: number }[],
+  years: number[],
+  stat: string
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -29,9 +31,10 @@ export function RecYardsBarChart({
         .range([margin.left, containerWidth - margin.right])
         .padding(0.1);
 
+      const maxValue = d3.max(data, (d) => d[stat]) || 0;
       const y = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => d.yards)!])
+        .domain([0, maxValue * 1.1]) // 10% headroom for label
         .nice()
         .range([height - margin.bottom, margin.top]);
 
@@ -58,8 +61,8 @@ export function RecYardsBarChart({
         .duration(700)
         .attr("x", (d) => x(d.season.toString())!)
         .attr("width", x.bandwidth())
-        .attr("y", (d) => y(d.yards))
-        .attr("height", d => y(0) - y(d.yards));
+        .attr("y", (d) => y(d[stat]))
+        .attr("height", d => y(0) - y(d[stat]));
 
       bars.enter()
         .append("rect")
@@ -70,8 +73,8 @@ export function RecYardsBarChart({
         .attr("fill", "steelblue")
         .transition()
         .duration(700)
-        .attr("y", (d) => y(d.yards))
-        .attr("height", d => y(0) - y(d.yards));
+        .attr("y", (d) => y(d[stat]))
+        .attr("height", d => y(0) - y(d[stat]));
 
       // --- LABELS ---
       let labelsG = svg.select<SVGGElement>('g.labels');
@@ -95,8 +98,8 @@ export function RecYardsBarChart({
       labels.transition()
         .duration(700)
         .attr('x', (d) => x(d.season.toString())! + x.bandwidth() / 2)
-        .attr('y', (d) => Math.max(y(d.yards) - 5, minLabelY))
-        .text((d) => d.yards)
+        .attr('y', (d) => Math.max(y(d[stat]) - 5, minLabelY))
+        .text((d) => d[stat])
         .style("opacity", 1);
 
       labels.enter()
@@ -107,10 +110,10 @@ export function RecYardsBarChart({
         .attr('font-size', '12px')
         .attr('fill', 'black')
         .style("opacity", 0)
-        .text((d) => d.yards)
+        .text((d) => d[stat])
         .transition()
         .duration(700)
-        .attr('y', (d) => Math.max(y(d.yards) - 5, minLabelY))
+        .attr('y', (d) => Math.max(y(d[stat]) - 5, minLabelY))
         .style("opacity", 1);
 
       // --- AXES ---

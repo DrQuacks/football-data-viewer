@@ -7,16 +7,17 @@ const pool = new Pool({
 
 export async function GET(req: NextRequest) {
   const player = req.nextUrl.searchParams.get("player");
+  const stat = req.nextUrl.searchParams.get("stat") || "yards";
 
   if (!player) {
     return new Response("Missing player param", { status: 400 });
   }
 
   const query = `
-    SELECT DISTINCT ON (season) season, yards
+    SELECT DISTINCT ON (season) season, ${stat}
     FROM receiving_stats
     WHERE player = $1
-    ORDER BY season, yards DESC;
+    ORDER BY season, ${stat} DESC;
   `;
 
   const result = await pool.query(query, [player]);

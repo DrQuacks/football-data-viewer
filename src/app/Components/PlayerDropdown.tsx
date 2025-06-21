@@ -49,6 +49,8 @@ const fetchOptions = async () => {
     //console.log("Fetching players with params:", params.toString());
     if (appState.startYear) params.append("startYear", appState.startYear.toString());
     if (appState.endYear) params.append("endYear", appState.endYear.toString());
+    if (appState.stat) params.append("stat", appState.stat);
+
 
     const res = await fetch(`/api/receiving/players?${params.toString()}`);
     const data = await res.json();

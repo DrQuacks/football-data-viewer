@@ -8,6 +8,7 @@ declare global {
         startYear:number|null,
         endYear:number|null,
         availableYears:number[],
+        stat:string|null,
         lastChange:ActionPayload|null,
         stateID:number
     }
@@ -17,7 +18,8 @@ declare global {
         chartType?:ChartType,
         player?:string|null,
         year?:number|null,
-        availableYears?:number[]|null
+        availableYears?:number[]|null,
+        stat?:string|null
     }
 
     type StateAction = {
