@@ -8,6 +8,7 @@ declare global {
         startYear:number|null,
         endYear:number|null,
         availableYears:number[],
+        lastChange:ActionPayload|null,
         stateID:number
     }
 

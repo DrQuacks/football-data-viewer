@@ -7,5 +7,6 @@ export const initialAppState:AppState = {
     startYear:null,
     endYear:null,
     availableYears:constants.FULL_YEARS,
+    lastChange:null,
     stateID:1
 }
