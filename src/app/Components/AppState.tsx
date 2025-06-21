@@ -28,13 +28,13 @@ const reducer = (appState:AppState, action:StateAction) => {
             return appState
         }
         case "update_start_year":{
-            if (payload.year) {
+            if (payload.year || payload.year === null) {
                 return {...appState,startYear:payload.year,stateID:newID}
             }
             return appState
         }
         case "update_end_year":{
-            if (payload.year) {
+            if (payload.year || payload.year === null) {
                 return {...appState,endYear:payload.year,stateID:newID}
             }
             return appState
@@ -46,7 +46,7 @@ const reducer = (appState:AppState, action:StateAction) => {
             return appState
         }
         case "update_player":{
-            if (payload.player) {
+            if (payload.player || payload.player === null) {
                 return {...appState,player:payload.player,stateID:newID}
             }
             return appState

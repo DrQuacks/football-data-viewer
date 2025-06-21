@@ -14,7 +14,7 @@ declare global {
     type ActionPayload = {
         statType?:StatType,
         chartType?:ChartType,
-        player?:string,
+        player?:string|null,
         year?:number|null,
         availableYears?:number[]|null
     }

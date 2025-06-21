@@ -14,24 +14,52 @@ export async function GET(req: NextRequest) {
 
     try {
         await client.connect();
-        // const result = await client.query(`
-        //     SELECT player
-        //     FROM receiving_stats
-        //     WHERE player IS NOT NULL
-        //     GROUP BY player
-        //     ORDER BY SUM(yards) DESC;
-        //   `);
-        const result = await client.query(
-            `
-              SELECT player
-              FROM receiving_stats
-              WHERE player IS NOT NULL AND LOWER(player) LIKE $1
-              GROUP BY player
-              ORDER BY SUM(yards) DESC
-              LIMIT $2 OFFSET $3
-            `,
-            [`%${query}%`, limit, offset]
-          );
+
+        // const result = await client.query(
+        //     `
+        //       SELECT player
+        //       FROM receiving_stats
+        //       WHERE player IS NOT NULL AND LOWER(player) LIKE $1
+        //       GROUP BY player
+        //       ORDER BY SUM(yards) DESC
+        //       LIMIT $2 OFFSET $3
+        //     `,
+        //     [`%${query}%`, limit, offset]
+        //   );
+        const startYear = searchParams.get("startYear");
+        const endYear = searchParams.get("endYear");
+
+        let whereClauses = ["player IS NOT NULL", "LOWER(player) LIKE $1"];
+        let params: (string | number)[] = [`%${query}%`];
+        let paramIdx = 2;
+
+        if (startYear) {
+            whereClauses.push(`season >= $${paramIdx}`);
+            params.push(Number(startYear));
+            paramIdx++;
+        }
+        if (endYear) {
+            whereClauses.push(`season <= $${paramIdx}`);
+            params.push(Number(endYear));
+            paramIdx++;
+        }
+        console.log('where clauses are: ', whereClauses, 'params are: ', params)
+
+        const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
+
+        const sql = `
+            SELECT player
+            FROM receiving_stats
+            ${whereSQL}
+            GROUP BY player
+            ORDER BY SUM(yards) DESC
+            LIMIT $${paramIdx} OFFSET $${paramIdx + 1}
+        `;
+        console.log('sql is: ', sql, 'params are: ', params)
+
+        params.push(limit, offset);
+
+        const result = await client.query(sql, params);
 
         return new Response(JSON.stringify(result.rows), {
             status: 200,
