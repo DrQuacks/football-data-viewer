@@ -23,6 +23,7 @@ export const StatTypeDropdown = () => {
         }
       };
     return (
+        <div className='my-2'>
         <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">{name}</InputLabel>
             <Select
@@ -37,5 +38,6 @@ export const StatTypeDropdown = () => {
                 })}
             </Select>
         </FormControl>
+        </div>
     )
 }
