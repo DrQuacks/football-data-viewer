@@ -17,6 +17,7 @@ export function RecYardsBarChart({
   useEffect(() => {
     function draw() {
       if (!svgRef.current) return;
+      if (!data.length || !stat) return;
 
       const svg = d3.select(svgRef.current);
       const rawWidth = svgRef.current.parentElement?.clientWidth || 800;
@@ -61,8 +62,8 @@ export function RecYardsBarChart({
         .duration(700)
         .attr("x", (d) => x(d.season.toString())!)
         .attr("width", x.bandwidth())
-        .attr("y", (d) => y(d[stat]))
-        .attr("height", d => y(0) - y(d[stat]));
+        .attr("y", (d) => y(d[stat] ?? 0))
+        .attr("height", d => y(0) - y(d[stat] ?? 0));
 
       bars.enter()
         .append("rect")
@@ -73,8 +74,8 @@ export function RecYardsBarChart({
         .attr("fill", "steelblue")
         .transition()
         .duration(700)
-        .attr("y", (d) => y(d[stat]))
-        .attr("height", d => y(0) - y(d[stat]));
+        .attr("y", (d) => y(d[stat] ?? 0))
+        .attr("height", d => y(0) - y(d[stat] ?? 0));
 
       // --- LABELS ---
       let labelsG = svg.select<SVGGElement>('g.labels');
@@ -98,8 +99,8 @@ export function RecYardsBarChart({
       labels.transition()
         .duration(700)
         .attr('x', (d) => x(d.season.toString())! + x.bandwidth() / 2)
-        .attr('y', (d) => Math.max(y(d[stat]) - 5, minLabelY))
-        .text((d) => d[stat])
+        .attr('y', (d) => Math.max(y(d[stat] ?? 0) - 5, minLabelY))
+        .text((d) => d[stat] ?? 0)
         .style("opacity", 1);
 
       labels.enter()
@@ -113,7 +114,7 @@ export function RecYardsBarChart({
         .text((d) => d[stat])
         .transition()
         .duration(700)
-        .attr('y', (d) => Math.max(y(d[stat]) - 5, minLabelY))
+        .attr('y', (d) => Math.max(y(d[stat] ?? 0) - 5, minLabelY))
         .style("opacity", 1);
 
       // --- AXES ---
@@ -147,7 +148,7 @@ export function RecYardsBarChart({
     return () => {
       window.removeEventListener('resize', draw);
     };
-  }, [data, years]);
+  }, [data, years,stat]);
 
   return <svg ref={svgRef} width="100%" height="100%"></svg>;
 }
