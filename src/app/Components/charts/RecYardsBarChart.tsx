@@ -65,6 +65,7 @@ export function RecYardsBarChart({
         .attr("y", (d) => y(d[stat] ?? 0))
         .attr("height", d => y(0) - y(d[stat] ?? 0));
 
+
       bars.enter()
         .append("rect")
         .attr("x", (d) => x(d.season.toString())!)

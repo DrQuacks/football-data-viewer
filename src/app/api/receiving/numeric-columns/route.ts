@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     FROM information_schema.columns
     WHERE table_name = 'receiving_stats'
       AND data_type IN ('integer', 'numeric', 'double precision', 'real')
-      AND column_name NOT IN ('season', 'age','stat');
+      AND column_name NOT IN ('season', 'age','stat','id');
   `;
   const result = await pool.query(sql);
   return Response.json(result.rows.map(r => r.column_name));

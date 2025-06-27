@@ -41,7 +41,7 @@ useEffect(() => {
   return (
     <div>
       <h2>{appState.player} Receiving Yards by Season</h2>
-      <RecYardsBarChart data={data} years={years} stat={appState.stat || "yards"} />    
+      <RecYardsBarChart data={availableData} years={years} stat={appState.stat || "yards"} />    
     </div>
   );
 };

@@ -37,7 +37,7 @@ export const StatDropdown = () => {
         >
           {options.map((col) => (
             <MenuItem key={col} value={col}>
-              {col}
+              {col.replaceAll('_',' ')}
             </MenuItem>
           ))}
         </Select>
