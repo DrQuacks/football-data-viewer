@@ -94,11 +94,15 @@ const fetchOptions = async () => {
         options={options}
         value={value}
         onChange={handleChange}
-        onInputChange={(e, inputValue) => {
-            setQuery(inputValue.toLowerCase());
-            setOptions([]);
-            setOffset(0);
-            setHasMore(true);
+        onInputChange={(e, inputValue, reason) => {
+          setQuery(inputValue.toLowerCase());
+          setOptions([]);
+          setOffset(0);
+          setHasMore(true);
+          if (inputValue === "") {
+            setValue(null);
+            dispatch({ type: "update_player", payload: { player: null } });
+          }
         }}
         ListboxProps={{
             onScroll: handleScroll,

@@ -38,9 +38,15 @@ useEffect(() => {
   if (!appState.player) return null;
   if (!data.length) return <p>Loading stats...</p>;
 
+  const toTitleCase = (str: string) =>
+    str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));
+
+const title: string = appState.stat
+  ? toTitleCase(appState.stat.replaceAll('_', ' '))
+  : "";
   return (
     <div>
-      <h2>{appState.player} Receiving Yards by Season</h2>
+      <h1 className="text-center text-3xl">{appState.player} {title} by Season</h1>
       <RecYardsBarChart data={availableData} years={years} stat={appState.stat || "yards"} />    
     </div>
   );
