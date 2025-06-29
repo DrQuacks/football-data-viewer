@@ -62,7 +62,7 @@ export function BarChart({
         svg.append('g')
           .attr('class', 'x-axis')
           .attr('transform', `translate(0,${height - margin.bottom})`)
-          .call(d3.axisBottom(x).tickFormat(d => d.split(' ')[0]));
+          .call(d3.axisBottom(x));
 
         svg.selectAll('g.x-axis text')
           .attr('transform', 'rotate(-45)')
@@ -77,11 +77,13 @@ export function BarChart({
         svg.select('.x-axis')
           .transition()
           .duration(750)
-          .call(d3.axisBottom(x).tickFormat(d => d.split(' ')[0]) as any);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .call(d3.axisBottom(x) as any);
 
         svg.select('.y-axis')
           .transition()
           .duration(750)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .call(d3.axisLeft(y) as any);
       }
 

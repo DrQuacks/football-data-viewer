@@ -5,11 +5,6 @@ import * as d3 from 'd3';
 
 const colors = ['steelblue', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
-type PlayerData = {
-  player: string;
-  value: number;
-};
-
 type LineData = {
   player: string;
   data: { year: number; value: number }[];
@@ -62,7 +57,7 @@ export function LineChart({
         svg.append('g')
           .attr('class', 'x-axis')
           .attr('transform', `translate(0,${height - margin.bottom})`)
-          .call(d3.axisBottom(x).tickFormat(d => d.toString()));
+          .call(d3.axisBottom(x).tickFormat(d => Math.round(Number(d)).toString()).ticks(years.length));
 
         svg.append('g')
           .attr('class', 'y-axis')
@@ -73,7 +68,7 @@ export function LineChart({
         svg.select('.x-axis')
           .transition()
           .duration(750)
-          .call(d3.axisBottom(x).tickFormat(d => d.toString()) as any);
+          .call(d3.axisBottom(x).tickFormat(d => Math.round(Number(d)).toString()).ticks(years.length) as any);
 
         svg.select('.y-axis')
           .transition()
