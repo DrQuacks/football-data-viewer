@@ -25,9 +25,6 @@ export function ScatterPlot({
       const height = 600;
       const margin = { top: 20, right: 20, bottom: 80, left: 80 };
 
-      // Clear previous contents
-      svg.selectAll('*').remove();
-
       // Set up scales
       const xMin = d3.min(data, (d) => Number(d[primaryStat])) || 0;
       const xMax = d3.max(data, (d) => Number(d[primaryStat])) || 0;
@@ -48,58 +45,126 @@ export function ScatterPlot({
 
       svg.attr('width', containerWidth).attr('height', height);
 
-      // Add dots
-      svg
-        .selectAll('circle')
-        .data(data)
-        .join('circle')
+      // --- DOTS ---
+      let dotsG = svg.select<SVGGElement>('g.dots');
+      if (dotsG.empty()) {
+        dotsG = svg.append('g').classed('dots', true);
+      }
+
+      const dots = dotsG.selectAll<SVGCircleElement, typeof data[0]>("circle")
+        .data(data, (d: typeof data[0]) => d.player);
+
+      // Remove dots that are no longer in the data
+      dots.exit()
+        .transition()
+        .duration(500)
+        .attr("r", 0)
+        .style("opacity", 0)
+        .remove();
+
+      // Update existing dots
+      dots.transition()
+        .duration(700)
         .attr('cx', (d) => x(Number(d[primaryStat])))
         .attr('cy', (d) => y(Number(d[secondaryStat])))
         .attr('r', 6)
+        .attr('opacity', 0.7);
+
+      // Add new dots
+      dots.enter()
+        .append('circle')
+        .attr('cx', (d) => x(Number(d[primaryStat])))
+        .attr('cy', (d) => y(Number(d[secondaryStat])))
+        .attr('r', 0)
         .attr('fill', 'steelblue')
-        .attr('opacity', 0.7)
+        .attr('opacity', 0)
         .on('mouseover', function() {
           d3.select(this).attr('r', 8).attr('opacity', 1);
         })
         .on('mouseout', function() {
           d3.select(this).attr('r', 6).attr('opacity', 0.7);
-        });
+        })
+        .transition()
+        .duration(700)
+        .attr('r', 6)
+        .attr('opacity', 0.7);
 
-      // Add player labels
-      svg
-        .selectAll('text')
-        .data(data)
-        .join('text')
+      // --- LABELS ---
+      let labelsG = svg.select<SVGGElement>('g.labels');
+      if (labelsG.empty()) {
+        labelsG = svg.append('g').classed('labels', true);
+      }
+
+      const labels = labelsG.selectAll<SVGTextElement, typeof data[0]>("text")
+        .data(data, (d: typeof data[0]) => d.player);
+
+      // Remove labels that are no longer in the data
+      labels.exit()
+        .transition()
+        .duration(500)
+        .style("opacity", 0)
+        .remove();
+
+      // Update existing labels
+      labels.transition()
+        .duration(700)
+        .attr('x', (d) => x(Number(d[primaryStat])))
+        .attr('y', (d) => y(Number(d[secondaryStat])) - 10)
+        .style("opacity", 1);
+
+      // Add new labels
+      labels.enter()
+        .append('text')
         .attr('x', (d) => x(Number(d[primaryStat])))
         .attr('y', (d) => y(Number(d[secondaryStat])) - 10)
         .attr('text-anchor', 'middle')
         .attr('font-size', '10px')
         .attr('fill', 'black')
+        .style('pointer-events', 'none')
+        .style("opacity", 0)
         .text((d) => d.player)
-        .style('pointer-events', 'none');
+        .transition()
+        .duration(700)
+        .style("opacity", 1);
 
-      // Add axes
-      svg
-        .append('g')
+      // --- AXES ---
+      let xAxisG = svg.select<SVGGElement>('g.x-axis');
+      if (xAxisG.empty()) {
+        xAxisG = svg.append('g').classed('x-axis', true);
+      }
+      xAxisG
         .attr('transform', `translate(0,${height - margin.bottom})`)
+        .transition()
+        .duration(700)
         .call(d3.axisBottom(x));
 
-      svg
-        .append('g')
+      let yAxisG = svg.select<SVGGElement>('g.y-axis');
+      if (yAxisG.empty()) {
+        yAxisG = svg.append('g').classed('y-axis', true);
+      }
+      yAxisG
         .attr('transform', `translate(${margin.left},0)`)
+        .transition()
+        .duration(700)
         .call(d3.axisLeft(y));
 
-      // Add axis labels
-      svg
-        .append('text')
+      // --- AXIS LABELS ---
+      let xLabelG = svg.select<SVGTextElement>('text.x-label');
+      if (xLabelG.empty()) {
+        xLabelG = svg.append('text').classed('x-label', true);
+      }
+      xLabelG
         .attr('x', containerWidth / 2)
         .attr('y', height - margin.bottom / 2)
         .attr('text-anchor', 'middle')
         .attr('font-size', '14px')
         .text(primaryStat.replaceAll('_', ' '));
 
-      svg
-        .append('text')
+      let yLabelG = svg.select<SVGTextElement>('text.y-label');
+      if (yLabelG.empty()) {
+        yLabelG = svg.append('text').classed('y-label', true);
+      }
+      yLabelG
         .attr('transform', 'rotate(-90)')
         .attr('x', -height / 2)
         .attr('y', margin.left / 2)
