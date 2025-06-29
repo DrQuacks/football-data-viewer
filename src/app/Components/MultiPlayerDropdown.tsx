@@ -70,7 +70,12 @@ export const MultiPlayerDropdown = () => {
             value={player || null}
             onChange={(e, newValue) => handlePlayerChange(index, newValue)}
             filterOptions={(options, { inputValue }) => {
-              const filtered = options.filter(option =>
+              // Filter out already selected players (except the current one being edited)
+              const otherSelectedPlayers = appState.players.filter((p, i) => i !== index && p.trim());
+              const availableOptions = options.filter(option => !otherSelectedPlayers.includes(option));
+              
+              // Then filter by search input
+              const filtered = availableOptions.filter(option =>
                 option.toLowerCase().includes(inputValue.toLowerCase())
               );
               return filtered;

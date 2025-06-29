@@ -333,6 +333,12 @@ export function LineChart({
         legendItems.transition()
           .duration(750)
           .attr('transform', (d, i) => `translate(${containerWidth - margin.right - 100}, ${margin.top + i * 20})`);
+
+        // Update colors of existing legend items
+        legendItems.select('line')
+          .transition()
+          .duration(750)
+          .attr('stroke', (d, i) => colors[i % colors.length]);
       }
     }
 

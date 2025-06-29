@@ -215,6 +215,12 @@ export function BarChart({
         legendItems.transition()
           .duration(750)
           .attr('transform', (d, i) => `translate(${containerWidth - margin.right - 100}, ${margin.top + i * 20})`);
+
+        // Update colors of existing legend items
+        legendItems.select('rect')
+          .transition()
+          .duration(750)
+          .attr('fill', (d, i) => colors[i % colors.length]);
       }
     }
 
