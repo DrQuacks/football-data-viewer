@@ -27,6 +27,7 @@ export function LineChart({
   players: string[]
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function draw() {
@@ -140,7 +141,67 @@ export function LineChart({
               .attr('fill', colors[playerIndex % colors.length])
               .attr('stroke', 'white')
               .attr('stroke-width', 2)
-              .style('opacity', 0),
+              .style('opacity', 0)
+              .on('mouseover', function(event, pointData) {
+                // Increase dot size
+                d3.select(this).attr('r', 6).attr('opacity', 1);
+                
+                // Show vertical line
+                const verticalLine = svg.selectAll('line.vertical-line')
+                  .data([1])
+                  .join(
+                    (enter) => enter.append('line')
+                      .classed('vertical-line', true)
+                      .attr('stroke', '#999')
+                      .attr('stroke-width', 1)
+                      .attr('stroke-dasharray', '3,3')
+                      .style('opacity', 0),
+                    (update) => update,
+                    (exit) => exit.remove()
+                  );
+
+                verticalLine
+                  .transition()
+                  .duration(100)
+                  .attr('x1', x(pointData.year))
+                  .attr('y1', margin.top)
+                  .attr('x2', x(pointData.year))
+                  .attr('y2', height - margin.bottom)
+                  .style('opacity', 1);
+
+                // Show tooltip with all players' data for this year
+                if (tooltipRef.current) {
+                  const tooltip = d3.select(tooltipRef.current);
+                  let tooltipContent = `<strong>Year: ${pointData.year}</strong><br/>`;
+                  
+                  players.forEach((player, i) => {
+                    const playerData = data[player]?.find(d => d.season === pointData.year);
+                    const value = playerData ? Number(playerData[stat]).toLocaleString() : 'No data';
+                    tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${player}: ${value}<br/>`;
+                  });
+
+                  tooltip
+                    .style('opacity', 1)
+                    .html(tooltipContent)
+                    .style('left', (event.clientX + 5) + 'px')
+                    .style('top', (event.clientY + 5) + 'px');
+                }
+              })
+              .on('mouseout', function() {
+                // Return dot to normal size
+                d3.select(this).attr('r', 4).attr('opacity', 1);
+                
+                // Hide vertical line
+                svg.selectAll('line.vertical-line')
+                  .transition()
+                  .duration(100)
+                  .style('opacity', 0);
+
+                // Hide tooltip
+                if (tooltipRef.current) {
+                  d3.select(tooltipRef.current).style('opacity', 0);
+                }
+              }),
             (update) => update,
             (exit) => exit.remove()
           );
@@ -151,6 +212,69 @@ export function LineChart({
           .attr('cy', d => y(d.value))
           .attr('fill', colors[playerIndex % colors.length])
           .style('opacity', 1);
+
+        // Add event handlers to existing circles
+        circles
+          .on('mouseover', function(event, pointData) {
+            // Increase dot size
+            d3.select(this).attr('r', 6).attr('opacity', 1);
+            
+            // Show vertical line
+            const verticalLine = svg.selectAll('line.vertical-line')
+              .data([1])
+              .join(
+                (enter) => enter.append('line')
+                  .classed('vertical-line', true)
+                  .attr('stroke', '#999')
+                  .attr('stroke-width', 1)
+                  .attr('stroke-dasharray', '3,3')
+                  .style('opacity', 0),
+                (update) => update,
+                (exit) => exit.remove()
+              );
+
+            verticalLine
+              .transition()
+              .duration(100)
+              .attr('x1', x(pointData.year))
+              .attr('y1', margin.top)
+              .attr('x2', x(pointData.year))
+              .attr('y2', height - margin.bottom)
+              .style('opacity', 1);
+
+            // Show tooltip with all players' data for this year
+            if (tooltipRef.current) {
+              const tooltip = d3.select(tooltipRef.current);
+              let tooltipContent = `<strong>Year: ${pointData.year}</strong><br/>`;
+              
+              players.forEach((player, i) => {
+                const playerData = data[player]?.find(d => d.season === pointData.year);
+                const value = playerData ? Number(playerData[stat]).toLocaleString() : 'No data';
+                tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${player}: ${value}<br/>`;
+              });
+
+              tooltip
+                .style('opacity', 1)
+                .html(tooltipContent)
+                .style('left', (event.clientX + 5) + 'px')
+                .style('top', (event.clientY + 5) + 'px');
+            }
+          })
+          .on('mouseout', function() {
+            // Return dot to normal size
+            d3.select(this).attr('r', 4).attr('opacity', 1);
+            
+            // Hide vertical line
+            svg.selectAll('line.vertical-line')
+              .transition()
+              .duration(100)
+              .style('opacity', 0);
+
+            // Hide tooltip
+            if (tooltipRef.current) {
+              d3.select(tooltipRef.current).style('opacity', 0);
+            }
+          });
       });
 
       // Always show legend
@@ -219,5 +343,26 @@ export function LineChart({
     };
   }, [data, years, stat, players]);
 
-  return <svg ref={svgRef} width="100%" height="100%"></svg>;
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg ref={svgRef} width="100%" height="100%"></svg>
+      <div
+        ref={tooltipRef}
+        style={{
+          position: 'fixed',
+          opacity: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          color: '#333',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          fontSize: '12px',
+          pointerEvents: 'none',
+          zIndex: 1000,
+          whiteSpace: 'nowrap',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          border: '1px solid rgba(0,0,0,0.1)'
+        }}
+      />
+    </div>
+  );
 } 
