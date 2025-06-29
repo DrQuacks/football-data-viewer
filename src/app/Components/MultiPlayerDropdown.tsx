@@ -89,8 +89,9 @@ export const MultiPlayerDropdown = () => {
               color="error"
               size="small"
               onClick={() => handleRemovePlayer(index)}
+              sx={{ minWidth: 'auto', px: 1 }}
             >
-              Remove
+              −
             </Button>
           )}
         </div>

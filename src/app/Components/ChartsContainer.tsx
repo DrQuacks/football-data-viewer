@@ -8,6 +8,7 @@ import { constants } from "../constants";
 
 export const ChartsContainer = () => {
   const { appState, dispatch } = use(AppContext)!;
+  const [originalChartData, setOriginalChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
   const [chartData, setChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
   const [scatterData, setScatterData] = useState<{ player: string; [key: string]: number | string }[]>([]);
   const [years, setYears] = useState<number[]>(appState.availableYears);
@@ -29,7 +30,8 @@ export const ChartsContainer = () => {
         results.forEach(({ player, data }) => {
           newData[player] = data;
         });
-        setChartData(newData);
+        setOriginalChartData(newData); // Store original data
+        setChartData(newData); // Also set as current data initially
         
         // Get all unique years from all players
         const allYears = new Set<number>();
@@ -70,18 +72,17 @@ export const ChartsContainer = () => {
     
     const validPlayers = appState.players.filter(p => p.trim());
     
-    if (validPlayers.length > 0) {
-      // Filter the chartData for all players
-      const currentChartData = chartData;
+    if (validPlayers.length > 0 && Object.keys(originalChartData).length > 0) {
+      // Filter the originalChartData for all players
       const filteredData: { [player: string]: { season: number; [key: string]: number }[] } = {};
-      Object.keys(currentChartData).forEach(player => {
-        filteredData[player] = currentChartData[player].filter(row => selectedYears.includes(row.season));
+      Object.keys(originalChartData).forEach(player => {
+        filteredData[player] = originalChartData[player].filter(row => selectedYears.includes(row.season));
       });
       setChartData(filteredData);
     }
     
     setYears(selectedYears);
-  }, [appState.startYear, appState.endYear, appState.availableYears, appState.chartType, appState.players.length]);
+  }, [appState.startYear, appState.endYear, appState.availableYears, appState.chartType, originalChartData]);
 
   // Don't render anything if no chart type is selected
   if (!appState.chartType) {

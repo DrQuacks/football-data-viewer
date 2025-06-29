@@ -111,6 +111,8 @@ export function BarChart({
           (update) => update,
           (exit) => exit.remove()
         )
+        .transition()
+        .duration(750)
         .attr('transform', (d: GroupedDataItem) => `translate(${x(d.year.toString())}, 0)`)
         .style('opacity', 1);
 
@@ -131,7 +133,7 @@ export function BarChart({
             (exit) => exit.remove()
           );
 
-        // Animate bars
+        // Animate bars with proper transitions
         bars.transition()
           .duration(750)
           .attr('x', (playerData: PlayerData) => xInner(playerData.player)!)
