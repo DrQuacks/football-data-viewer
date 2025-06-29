@@ -59,18 +59,44 @@ export const ChartsContainer = () => {
   },[appState.startYear,appState.endYear,appState.availableYears,data,appState.chartType])
 
   // Don't render anything if no chart type is selected
-  if (!appState.chartType) return null;
+  if (!appState.chartType) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-center text-lg text-gray-600">
+          Please select a chart type to get started.
+        </p>
+      </div>
+    );
+  }
 
   // For scatter plots, don't require a specific player
   if (appState.chartType === "scatter") {
     if (!appState.primaryStat || !appState.secondaryStat) {
-      return <p className="text-center text-lg">Please select both primary and secondary stats for the scatter plot.</p>;
+      return (
+        <div className="flex items-center justify-center h-96">
+          <p className="text-center text-lg text-gray-600">
+            Please select both primary and secondary stats for the scatter plot.
+          </p>
+        </div>
+      );
     }
     if (!appState.aggregate) {
-      return <p className="text-center text-lg">Please select an aggregate type (Total or Average) for the scatter plot.</p>;
+      return (
+        <div className="flex items-center justify-center h-96">
+          <p className="text-center text-lg text-gray-600">
+            Please select an aggregate type (Total or Average) for the scatter plot.
+          </p>
+        </div>
+      );
     }
     if (!scatterData.length) {
-      return <p className="text-center text-lg">Loading scatter plot data...</p>;
+      return (
+        <div className="flex items-center justify-center h-96">
+          <p className="text-center text-lg text-gray-600">
+            Loading scatter plot data...
+          </p>
+        </div>
+      );
     }
 
     const toTitleCase = (str: string) =>
@@ -79,11 +105,13 @@ export const ChartsContainer = () => {
     const primaryTitle = toTitleCase(appState.primaryStat.replaceAll('_', ' '));
     const secondaryTitle = toTitleCase(appState.secondaryStat.replaceAll('_', ' '));
     const aggregateTitle = toTitleCase(appState.aggregate || "average");
+    const safeStart: number = appState.startYear || constants.START_YEAR;
+    const safeEnd: number = appState.endYear || constants.END_YEAR;
 
     return (
       <div>
         <h1 className="text-center text-3xl mb-4">
-          {primaryTitle} vs {secondaryTitle} Scatter Plot ({aggregateTitle})
+          {primaryTitle} vs {secondaryTitle} Scatter Plot ({aggregateTitle}) - {safeStart}-{safeEnd}
         </h1>
         <ScatterPlot 
           data={scatterData} 
@@ -95,8 +123,35 @@ export const ChartsContainer = () => {
   }
 
   // For bar/line charts, require a player
-  if (!appState.player) return null;
-  if (!data.length) return <p>Loading stats...</p>;
+  if (!appState.player) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-center text-lg text-gray-600">
+          Please select a player to view their stats.
+        </p>
+      </div>
+    );
+  }
+  
+  if (!appState.primaryStat) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-center text-lg text-gray-600">
+          Please select a stat to view for {appState.player}.
+        </p>
+      </div>
+    );
+  }
+  
+  if (!data.length) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-center text-lg text-gray-600">
+          Loading stats for {appState.player}...
+        </p>
+      </div>
+    );
+  }
 
   const toTitleCase = (str: string) =>
     str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));

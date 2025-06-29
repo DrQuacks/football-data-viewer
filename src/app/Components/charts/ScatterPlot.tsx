@@ -29,15 +29,20 @@ export function ScatterPlot({
       svg.selectAll('*').remove();
 
       // Set up scales
+      const xMin = d3.min(data, (d) => Number(d[primaryStat])) || 0;
+      const xMax = d3.max(data, (d) => Number(d[primaryStat])) || 0;
+      const yMin = d3.min(data, (d) => Number(d[secondaryStat])) || 0;
+      const yMax = d3.max(data, (d) => Number(d[secondaryStat])) || 0;
+
       const x = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => Number(d[primaryStat])) || 0])
+        .domain([Math.max(0, xMin - (xMax - xMin) * 0.1), xMax * 1.05])
         .nice()
         .range([margin.left, containerWidth - margin.right]);
 
       const y = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => Number(d[secondaryStat])) || 0])
+        .domain([Math.max(0, yMin - (yMax - yMin) * 0.1), yMax * 1.05])
         .nice()
         .range([height - margin.bottom, margin.top]);
 

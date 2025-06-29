@@ -14,18 +14,22 @@ export const Sidebar = () => {
     return (
         <div className="mx-6">
             <ChartTypeDropdown/>
-            <StatTypeDropdown/>
-            <StatDropdown/>
-            {appState.chartType !== "scatter" && <PlayerDropdown/>}
-            {appState.chartType === "scatter" && <AggregateDropdown/>}
-            <Dropdown
-                name='Start Year'
-                set={appState.availableYears}
-            />
-            <Dropdown
-                name='End Year'
-                set={appState.availableYears}
-            />
+            {appState.chartType && (
+                <>
+                    <StatTypeDropdown/>
+                    <StatDropdown/>
+                    {appState.chartType !== "scatter" && <PlayerDropdown/>}
+                    {appState.chartType === "scatter" && <AggregateDropdown/>}
+                    <Dropdown
+                        name='Start Year'
+                        set={appState.availableYears}
+                    />
+                    <Dropdown
+                        name='End Year'
+                        set={appState.availableYears}
+                    />
+                </>
+            )}
         </div>
     )
 }
