@@ -7,6 +7,7 @@ import {use} from 'react'
 import { AppContext } from "./AppState"
 import { ChartTypeDropdown } from "./ChartTypeDropdown"
 import { StatDropdown } from "./StatDropdown"
+import { AggregateDropdown } from "./AggregateDropdown"
 
 export const Sidebar = () => {
     const {appState} = use(AppContext)!
@@ -15,7 +16,8 @@ export const Sidebar = () => {
             <ChartTypeDropdown/>
             <StatTypeDropdown/>
             <StatDropdown/>
-            <PlayerDropdown/>
+            {appState.chartType !== "scatter" && <PlayerDropdown/>}
+            {appState.chartType === "scatter" && <AggregateDropdown/>}
             <Dropdown
                 name='Start Year'
                 set={appState.availableYears}

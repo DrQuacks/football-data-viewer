@@ -49,7 +49,7 @@ const fetchOptions = async () => {
     //console.log("Fetching players with params:", params.toString());
     if (appState.startYear) params.append("startYear", appState.startYear.toString());
     if (appState.endYear) params.append("endYear", appState.endYear.toString());
-    if (appState.stat) params.append("stat", appState.stat);
+    if (appState.primaryStat) params.append("stat", appState.primaryStat);
 
 
     const res = await fetch(`/api/receiving/players?${params.toString()}`);
@@ -94,7 +94,7 @@ const fetchOptions = async () => {
         options={options}
         value={value}
         onChange={handleChange}
-        onInputChange={(e, inputValue, reason) => {
+        onInputChange={(e, inputValue) => {
           setQuery(inputValue.toLowerCase());
           setOptions([]);
           setOffset(0);

@@ -1,6 +1,7 @@
 declare global {
     type StatType = "receiving" | "rushing" | "passing"
     type ChartType = "bar" | "line" | "scatter"
+    type AggregateType = "total" | "average"
     type AppState = {
         statType:StatType|null,
         chartType:ChartType|null,
@@ -8,7 +9,9 @@ declare global {
         startYear:number|null,
         endYear:number|null,
         availableYears:number[],
-        stat:string|null,
+        primaryStat:string|null,
+        secondaryStat:string|null,
+        aggregate:AggregateType|null,
         lastChange:ActionPayload|null,
         stateID:number
     }
@@ -19,7 +22,9 @@ declare global {
         player?:string|null,
         year?:number|null,
         availableYears?:number[]|null,
-        stat?:string|null
+        primaryStat?:string|null,
+        secondaryStat?:string|null,
+        aggregate?:AggregateType|null
     }
 
     type StateAction = {

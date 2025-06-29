@@ -52,9 +52,21 @@ const reducer = (appState:AppState, action:StateAction):AppState => {
             }
             return appState
         }
-        case "update_stat":{
-            if (payload.stat || payload.stat === null) {
-                return {...appState,stat:payload.stat,lastChange:payload,stateID:newID}
+        case "update_primary_stat":{
+            if (payload.primaryStat || payload.primaryStat === null) {
+                return {...appState,primaryStat:payload.primaryStat,lastChange:payload,stateID:newID}
+            }
+            return appState
+        }
+        case "update_secondary_stat":{
+            if (payload.secondaryStat || payload.secondaryStat === null) {
+                return {...appState,secondaryStat:payload.secondaryStat,lastChange:payload,stateID:newID}
+            }
+            return appState
+        }
+        case "update_aggregate":{
+            if (payload.aggregate || payload.aggregate === null) {
+                return {...appState,aggregate:payload.aggregate,lastChange:payload,stateID:newID}
             }
             return appState
         }
