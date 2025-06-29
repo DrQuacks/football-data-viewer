@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { AppContext } from "./AppState";
 import { BarChart } from "./charts/BarChart";
+import { LineChart } from "./charts/LineChart";
 import { ScatterPlot } from "./charts/ScatterPlot";
 import { constants } from "../constants";
 
@@ -197,12 +198,21 @@ export const ChartsContainer = () => {
           : `Grouped ${title} by Season`
         }
       </h1>
-      <BarChart 
-        data={chartData} 
-        years={years} 
-        stat={appState.primaryStat || "yards"} 
-        players={validPlayers}
-      />    
+      {appState.chartType === "line" ? (
+        <LineChart 
+          data={chartData} 
+          years={years} 
+          stat={appState.primaryStat || "yards"} 
+          players={validPlayers}
+        />
+      ) : (
+        <BarChart 
+          data={chartData} 
+          years={years} 
+          stat={appState.primaryStat || "yards"} 
+          players={validPlayers}
+        />
+      )}
     </div>
   );
 };
