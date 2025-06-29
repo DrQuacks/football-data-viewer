@@ -13,6 +13,7 @@ export function ScatterPlot({
   secondaryStat: string
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function draw() {
@@ -70,6 +71,37 @@ export function ScatterPlot({
         .attr('r', 6)
         .attr('opacity', 0.7);
 
+      // Add event handlers to existing dots
+      dots
+        .on('mouseover', function(event, d) {
+          d3.select(this).attr('r', 8).attr('opacity', 1);
+          
+          // Show tooltip
+          if (tooltipRef.current) {
+            const tooltip = d3.select(tooltipRef.current);
+            const primaryValue = Number(d[primaryStat]).toLocaleString();
+            const secondaryValue = Number(d[secondaryStat]).toLocaleString();
+            
+            tooltip
+              .style('opacity', 1)
+              .html(`
+                <strong>${d.player}</strong><br/>
+                ${primaryStat.replaceAll('_', ' ')}: ${primaryValue}<br/>
+                ${secondaryStat.replaceAll('_', ' ')}: ${secondaryValue}
+              `)
+              .style('left', (event.clientX + 5) + 'px')
+              .style('top', (event.clientY + 5) + 'px');
+          }
+        })
+        .on('mouseout', function() {
+          d3.select(this).attr('r', 6).attr('opacity', 0.7);
+          
+          // Hide tooltip
+          if (tooltipRef.current) {
+            d3.select(tooltipRef.current).style('opacity', 0);
+          }
+        });
+
       // Add new dots
       dots.enter()
         .append('circle')
@@ -78,11 +110,33 @@ export function ScatterPlot({
         .attr('r', 0)
         .attr('fill', 'steelblue')
         .attr('opacity', 0)
-        .on('mouseover', function() {
+        .on('mouseover', function(event, d) {
           d3.select(this).attr('r', 8).attr('opacity', 1);
+          
+          // Show tooltip
+          if (tooltipRef.current) {
+            const tooltip = d3.select(tooltipRef.current);
+            const primaryValue = Number(d[primaryStat]).toLocaleString();
+            const secondaryValue = Number(d[secondaryStat]).toLocaleString();
+            
+            tooltip
+              .style('opacity', 1)
+              .html(`
+                <strong>${d.player}</strong><br/>
+                ${primaryStat.replaceAll('_', ' ')}: ${primaryValue}<br/>
+                ${secondaryStat.replaceAll('_', ' ')}: ${secondaryValue}
+              `)
+              .style('left', (event.clientX + 5) + 'px')
+              .style('top', (event.clientY + 5) + 'px');
+          }
         })
         .on('mouseout', function() {
           d3.select(this).attr('r', 6).attr('opacity', 0.7);
+          
+          // Hide tooltip
+          if (tooltipRef.current) {
+            d3.select(tooltipRef.current).style('opacity', 0);
+          }
         })
         .transition()
         .duration(700)
@@ -180,5 +234,26 @@ export function ScatterPlot({
     };
   }, [data, primaryStat, secondaryStat]);
 
-  return <svg ref={svgRef} width="100%" height="100%"></svg>;
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg ref={svgRef} width="100%" height="100%"></svg>
+      <div
+        ref={tooltipRef}
+        style={{
+          position: 'fixed',
+          opacity: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          color: '#333',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          fontSize: '12px',
+          pointerEvents: 'none',
+          zIndex: 1000,
+          whiteSpace: 'nowrap',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          border: '1px solid rgba(0,0,0,0.1)'
+        }}
+      />
+    </div>
+  );
 } 
