@@ -2,7 +2,7 @@
 
 import { Dropdown } from "./Dropdown"
 import { StatTypeDropdown } from "./StatTypeDropdown"
-import { PlayerDropdown } from "./PlayerDropdown"
+import { MultiPlayerDropdown } from "./MultiPlayerDropdown"
 import {use} from 'react'
 import { AppContext } from "./AppState"
 import { ChartTypeDropdown } from "./ChartTypeDropdown"
@@ -18,7 +18,7 @@ export const Sidebar = () => {
                 <>
                     <StatTypeDropdown/>
                     <StatDropdown/>
-                    {appState.chartType !== "scatter" && <PlayerDropdown/>}
+                    {appState.chartType !== "scatter" && <MultiPlayerDropdown/>}
                     {appState.chartType === "scatter" && <AggregateDropdown/>}
                     <Dropdown
                         name='Start Year'

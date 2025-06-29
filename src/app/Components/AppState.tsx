@@ -46,11 +46,19 @@ const reducer = (appState:AppState, action:StateAction):AppState => {
             }
             return appState
         }
-        case "update_player":{
-            if (payload.player || payload.player === null) {
-                return {...appState,player:payload.player,lastChange:payload,stateID:newID}
+        case "update_players":{
+            if (payload.players) {
+                return {...appState,players:payload.players,lastChange:payload,stateID:newID}
             }
             return appState
+        }
+        case "add_player":{
+            const newPlayers = [...appState.players, payload.players![0]]
+            return {...appState,players:newPlayers,lastChange:payload,stateID:newID}
+        }
+        case "remove_player":{
+            const newPlayers = appState.players.filter(player => player !== payload.players![0])
+            return {...appState,players:newPlayers,lastChange:payload,stateID:newID}
         }
         case "update_primary_stat":{
             if (payload.primaryStat || payload.primaryStat === null) {
@@ -82,10 +90,11 @@ const AppContextProvider = (props:AppContextProviderProps) => {
     useEffect(()=>{
         console.log('AppState is ',appState)
         const { lastChange } = appState
-        if (lastChange && lastChange.player === null) {
+        // Only update available years if we have no players AND the last change wasn't already an available years update
+        if (lastChange && appState.players.length === 0 && lastChange.availableYears === undefined) {
             dispatch({ type: "update_available_years", payload: { availableYears: constants.FULL_YEARS } });
         }
-    },[appState])
+    },[appState.players.length])
     return (
         <AppContext.Provider
             value={{dispatch,appState}}

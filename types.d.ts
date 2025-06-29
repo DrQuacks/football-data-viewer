@@ -5,7 +5,7 @@ declare global {
     type AppState = {
         statType:StatType|null,
         chartType:ChartType|null,
-        player:string|null,
+        players:string[],
         startYear:number|null,
         endYear:number|null,
         availableYears:number[],
@@ -19,7 +19,7 @@ declare global {
     type ActionPayload = {
         statType?:StatType,
         chartType?:ChartType,
-        player?:string|null,
+        players?:string[],
         year?:number|null,
         availableYears?:number[]|null,
         primaryStat?:string|null,

@@ -32,7 +32,7 @@ export const StatDropdown = () => {
   // Show two dropdowns for scatter plot, one for other chart types
   if (appState.chartType === "scatter") {
     return (
-      <div className="my-2 space-y-4">
+      <div className="my-2 space-y-2">
         <FormControl fullWidth>
           <InputLabel id="primary-stat-dropdown-label">Primary Stat (X-axis)</InputLabel>
           <Select
@@ -50,22 +50,24 @@ export const StatDropdown = () => {
           </Select>
         </FormControl>
         
-        <FormControl fullWidth>
-          <InputLabel id="secondary-stat-dropdown-label">Secondary Stat (Y-axis)</InputLabel>
-          <Select
-            labelId="secondary-stat-dropdown-label"
-            id="secondary-stat-dropdown"
-            value={appState.secondaryStat || ""}
-            label="Secondary Stat (Y-axis)"
-            onChange={handleSecondaryStatChange}
-          >
-            {options.map((col) => (
-              <MenuItem key={col} value={col}>
-                {col.replaceAll('_',' ')}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <div className="mt-2">
+          <FormControl fullWidth>
+            <InputLabel id="secondary-stat-dropdown-label">Secondary Stat (Y-axis)</InputLabel>
+            <Select
+              labelId="secondary-stat-dropdown-label"
+              id="secondary-stat-dropdown"
+              value={appState.secondaryStat || ""}
+              label="Secondary Stat (Y-axis)"
+              onChange={handleSecondaryStatChange}
+            >
+              {options.map((col) => (
+                <MenuItem key={col} value={col}>
+                  {col.replaceAll('_',' ')}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
       </div>
     );
   }

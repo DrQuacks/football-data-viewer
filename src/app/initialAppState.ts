@@ -3,7 +3,7 @@ import { constants } from "./constants"
 export const initialAppState:AppState = {
     statType:null,
     chartType:null,
-    player:null,
+    players:[""],
     startYear:null,
     endYear:null,
     availableYears:constants.FULL_YEARS,

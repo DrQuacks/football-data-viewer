@@ -2,31 +2,45 @@
 
 import { use, useEffect, useState } from "react";
 import { AppContext } from "./AppState";
-import { RecYardsBarChart } from "./charts/RecYardsBarChart";
+import { BarChart } from "./charts/BarChart";
 import { ScatterPlot } from "./charts/ScatterPlot";
 import { constants } from "../constants";
 
 export const ChartsContainer = () => {
-  const { appState , dispatch } = use(AppContext)!;
-  const [data, setData] = useState<{ season: number; yards: number }[]>([]);
+  const { appState, dispatch } = use(AppContext)!;
+  const [chartData, setChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
   const [scatterData, setScatterData] = useState<{ player: string; [key: string]: number | string }[]>([]);
-  const [availableData, setAvailableData] = useState<{ season: number; yards: number }[]>([]);
   const [years, setYears] = useState<number[]>(appState.availableYears);
 
-  // Fetch data for bar/line charts (single player, single stat over time)
+  // Fetch data for all players (single or multiple)
   useEffect(() => {
-    if (!appState.player || appState.chartType === "scatter") return;
+    const validPlayers = appState.players.filter(p => p.trim());
+    if (validPlayers.length === 0 || appState.chartType === "scatter") return;
 
-    fetch(`/api/receiving/player-stats?player=${encodeURIComponent(appState.player)}&stat=${encodeURIComponent(appState.primaryStat || "yards")}`)
-      .then((res) => res.json())
-      .then((d) => {
-        setData(d);
-        setAvailableData(d);
-        const uniqueYears: number[] = Array.from(new Set<number>(d.map((row: { season: number }) => row.season))).sort((a, b) => a - b);
+    const fetchPromises = validPlayers.map(player =>
+      fetch(`/api/receiving/player-stats?player=${encodeURIComponent(player)}&stat=${encodeURIComponent(appState.primaryStat || "yards")}`)
+        .then(res => res.json())
+        .then(data => ({ player, data }))
+    );
+
+    Promise.all(fetchPromises)
+      .then(results => {
+        const newData: { [player: string]: { season: number; [key: string]: number }[] } = {};
+        results.forEach(({ player, data }) => {
+          newData[player] = data;
+        });
+        setChartData(newData);
+        
+        // Get all unique years from all players
+        const allYears = new Set<number>();
+        results.forEach(({ data }) => {
+          data.forEach((row: { season: number }) => allYears.add(row.season));
+        });
+        const uniqueYears = Array.from(allYears).sort((a, b) => a - b);
         setYears(uniqueYears);
         dispatch({ type: "update_available_years", payload: { availableYears: uniqueYears } });
       });
-  }, [appState.player, appState.primaryStat, appState.chartType, dispatch]);
+  }, [appState.players, appState.primaryStat, appState.chartType, dispatch]);
 
   // Fetch data for scatter plots (multiple players, two stats)
   useEffect(() => {
@@ -46,17 +60,28 @@ export const ChartsContainer = () => {
       });
   }, [appState.chartType, appState.primaryStat, appState.secondaryStat, appState.startYear, appState.endYear, appState.aggregate]);
 
+  // Filter data based on selected years
   useEffect(() => {
     if (appState.chartType === "scatter") return;
     
-    const safeStart:number = appState.startYear || constants.START_YEAR
-    const safeEnd:number = appState.endYear || constants.END_YEAR
-    const selectedYears = appState.availableYears.filter((year) => year >= safeStart && year <= safeEnd)
-    const newAvailableData = data.filter(row => selectedYears.includes(row.season))
-    console.log('selected years',{selectedYears,safeStart,safeEnd})
-    setYears(selectedYears)
-    setAvailableData(newAvailableData)
-  },[appState.startYear,appState.endYear,appState.availableYears,data,appState.chartType])
+    const safeStart: number = appState.startYear || constants.START_YEAR;
+    const safeEnd: number = appState.endYear || constants.END_YEAR;
+    const selectedYears = appState.availableYears.filter((year) => year >= safeStart && year <= safeEnd);
+    
+    const validPlayers = appState.players.filter(p => p.trim());
+    
+    if (validPlayers.length > 0) {
+      // Filter the chartData for all players
+      const currentChartData = chartData;
+      const filteredData: { [player: string]: { season: number; [key: string]: number }[] } = {};
+      Object.keys(currentChartData).forEach(player => {
+        filteredData[player] = currentChartData[player].filter(row => selectedYears.includes(row.season));
+      });
+      setChartData(filteredData);
+    }
+    
+    setYears(selectedYears);
+  }, [appState.startYear, appState.endYear, appState.availableYears, appState.chartType, appState.players.length]);
 
   // Don't render anything if no chart type is selected
   if (!appState.chartType) {
@@ -122,12 +147,13 @@ export const ChartsContainer = () => {
     );
   }
 
-  // For bar/line charts, require a player
-  if (!appState.player) {
+  // For bar/line charts, require at least one player
+  const validPlayers = appState.players.filter(p => p.trim());
+  if (!validPlayers.length) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-center text-lg text-gray-600">
-          Please select a player to view their stats.
+          Please select at least one player to view their stats.
         </p>
       </div>
     );
@@ -137,17 +163,18 @@ export const ChartsContainer = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-center text-lg text-gray-600">
-          Please select a stat to view for {appState.player}.
+          Please select a stat to view for {validPlayers.length === 1 ? validPlayers[0] : 'the selected players'}.
         </p>
       </div>
     );
   }
-  
-  if (!data.length) {
+
+  // Check if all player data is loaded
+  if (!Object.keys(chartData).length || validPlayers.some(player => !chartData[player] || !chartData[player].length)) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-center text-lg text-gray-600">
-          Loading stats for {appState.player}...
+          Loading stats for {validPlayers.join(', ')}...
         </p>
       </div>
     );
@@ -160,10 +187,21 @@ export const ChartsContainer = () => {
     ? toTitleCase(appState.primaryStat.replaceAll('_', ' '))
     : "";
 
+  // Single unified chart for any number of players
   return (
     <div>
-      <h1 className="text-center text-3xl">{appState.player} {title} by Season</h1>
-      <RecYardsBarChart data={availableData} years={years} stat={appState.primaryStat || "yards"} />    
+      <h1 className="text-center text-3xl">
+        {validPlayers.length === 1 
+          ? `${validPlayers[0]} ${title} by Season`
+          : `Grouped ${title} by Season`
+        }
+      </h1>
+      <BarChart 
+        data={chartData} 
+        years={years} 
+        stat={appState.primaryStat || "yards"} 
+        players={validPlayers}
+      />    
     </div>
   );
 };
