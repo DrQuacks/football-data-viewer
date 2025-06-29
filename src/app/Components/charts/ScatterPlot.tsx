@@ -26,11 +26,22 @@ export function ScatterPlot({
       const height = 600;
       const margin = { top: 20, right: 20, bottom: 80, left: 80 };
 
+      // Filter out data points with invalid values
+      const validData = data.filter(d => {
+        const primaryValue = Number(d[primaryStat]);
+        const secondaryValue = Number(d[secondaryStat]);
+        return !isNaN(primaryValue) && !isNaN(secondaryValue) && 
+               primaryValue !== null && secondaryValue !== null &&
+               primaryValue !== undefined && secondaryValue !== undefined;
+      });
+
+      if (validData.length === 0) return;
+
       // Set up scales
-      const xMin = d3.min(data, (d) => Number(d[primaryStat])) || 0;
-      const xMax = d3.max(data, (d) => Number(d[primaryStat])) || 0;
-      const yMin = d3.min(data, (d) => Number(d[secondaryStat])) || 0;
-      const yMax = d3.max(data, (d) => Number(d[secondaryStat])) || 0;
+      const xMin = d3.min(validData, (d) => Number(d[primaryStat])) || 0;
+      const xMax = d3.max(validData, (d) => Number(d[primaryStat])) || 0;
+      const yMin = d3.min(validData, (d) => Number(d[secondaryStat])) || 0;
+      const yMax = d3.max(validData, (d) => Number(d[secondaryStat])) || 0;
 
       const x = d3
         .scaleLinear()
@@ -52,8 +63,8 @@ export function ScatterPlot({
         dotsG = svg.append('g').classed('dots', true);
       }
 
-      const dots = dotsG.selectAll<SVGCircleElement, typeof data[0]>("circle")
-        .data(data, (d: typeof data[0]) => d.player);
+      const dots = dotsG.selectAll<SVGCircleElement, typeof validData[0]>("circle")
+        .data(validData, (d: typeof validData[0]) => d.player);
 
       // Remove dots that are no longer in the data
       dots.exit()
@@ -149,8 +160,8 @@ export function ScatterPlot({
         labelsG = svg.append('g').classed('labels', true);
       }
 
-      const labels = labelsG.selectAll<SVGTextElement, typeof data[0]>("text")
-        .data(data, (d: typeof data[0]) => d.player);
+      const labels = labelsG.selectAll<SVGTextElement, typeof validData[0]>("text")
+        .data(validData, (d: typeof validData[0]) => d.player);
 
       // Remove labels that are no longer in the data
       labels.exit()
