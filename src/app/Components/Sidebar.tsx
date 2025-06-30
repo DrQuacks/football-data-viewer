@@ -11,6 +11,7 @@ import { AggregateDropdown } from "./AggregateDropdown"
 
 export const Sidebar = () => {
     const {appState} = use(AppContext)!
+    
     return (
         <div className="mx-6">
             <ChartTypeDropdown/>

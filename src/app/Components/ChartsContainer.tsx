@@ -7,6 +7,50 @@ import { LineChart } from "./charts/LineChart";
 import { ScatterPlot } from "./charts/ScatterPlot";
 import { constants } from "../constants";
 
+const getNextStepMessage = (appState: AppState): string => {
+    if (!appState.chartType) {
+        return "Please select a chart type to get started";
+    }
+    
+    if (!appState.statType) {
+        return "Please select a stat type";
+    }
+    
+    if (appState.chartType === "scatter") {
+        if (!appState.primaryStat) {
+            return "Please select a primary stat";
+        }
+        
+        if (!appState.secondaryStat) {
+            return "Please select a secondary stat";
+        }
+        
+        if (!appState.aggregate) {
+            return "Please select an aggregate type";
+        }
+        
+        return "Chart is ready!";
+    }
+    
+    // For bar and line charts
+    const hasPlayers = appState.players && appState.players.length > 0 && appState.players[0] !== "";
+    const hasStat = appState.primaryStat;
+    
+    if (!hasStat && !hasPlayers) {
+        return "Please select a stat and a player";
+    }
+    
+    if (!hasStat) {
+        return "Please select a stat";
+    }
+    
+    if (!hasPlayers) {
+        return "Please select a player";
+    }
+    
+    return "Chart is ready!";
+}
+
 export const ChartsContainer = () => {
   const { appState, dispatch } = use(AppContext)!;
   const [originalChartData, setOriginalChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
@@ -90,7 +134,22 @@ export const ChartsContainer = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-center text-lg text-gray-600">
-          Please select a chart type to get started.
+          {getNextStepMessage(appState)}
+        </p>
+      </div>
+    );
+  }
+
+  // Check if chart is ready to display
+  const isChartReady = appState.chartType && appState.statType && appState.primaryStat && 
+                      appState.players && appState.players.length > 0 &&
+                      (appState.chartType !== "scatter" || (appState.secondaryStat && appState.aggregate));
+
+  if (!isChartReady) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-center text-lg text-gray-600">
+          {getNextStepMessage(appState)}
         </p>
       </div>
     );
@@ -98,24 +157,6 @@ export const ChartsContainer = () => {
 
   // For scatter plots, don't require a specific player
   if (appState.chartType === "scatter") {
-    if (!appState.primaryStat || !appState.secondaryStat) {
-      return (
-        <div className="flex items-center justify-center h-96">
-          <p className="text-center text-lg text-gray-600">
-            Please select both primary and secondary stats for the scatter plot.
-          </p>
-        </div>
-      );
-    }
-    if (!appState.aggregate) {
-      return (
-        <div className="flex items-center justify-center h-96">
-          <p className="text-center text-lg text-gray-600">
-            Please select an aggregate type (Total or Average) for the scatter plot.
-          </p>
-        </div>
-      );
-    }
     if (!scatterData.length) {
       return (
         <div className="flex items-center justify-center h-96">
@@ -129,8 +170,8 @@ export const ChartsContainer = () => {
     const toTitleCase = (str: string) =>
       str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));
 
-    const primaryTitle = toTitleCase(appState.primaryStat.replaceAll('_', ' '));
-    const secondaryTitle = toTitleCase(appState.secondaryStat.replaceAll('_', ' '));
+    const primaryTitle = toTitleCase((appState.primaryStat || "").replaceAll('_', ' '));
+    const secondaryTitle = toTitleCase((appState.secondaryStat || "").replaceAll('_', ' '));
     const aggregateTitle = toTitleCase(appState.aggregate || "average");
     const safeStart: number = appState.startYear || constants.START_YEAR;
     const safeEnd: number = appState.endYear || constants.END_YEAR;
@@ -142,8 +183,8 @@ export const ChartsContainer = () => {
         </h1>
         <ScatterPlot 
           data={scatterData} 
-          primaryStat={appState.primaryStat} 
-          secondaryStat={appState.secondaryStat} 
+          primaryStat={appState.primaryStat || ""} 
+          secondaryStat={appState.secondaryStat || ""} 
         />
       </div>
     );
@@ -151,26 +192,7 @@ export const ChartsContainer = () => {
 
   // For bar/line charts, require at least one player
   const validPlayers = appState.players.filter(p => p.trim());
-  if (!validPlayers.length) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-center text-lg text-gray-600">
-          Please select at least one player to view their stats.
-        </p>
-      </div>
-    );
-  }
   
-  if (!appState.primaryStat) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-center text-lg text-gray-600">
-          Please select a stat to view for {validPlayers.length === 1 ? validPlayers[0] : 'the selected players'}.
-        </p>
-      </div>
-    );
-  }
-
   // Check if all player data is loaded
   if (!Object.keys(chartData).length || validPlayers.some(player => !chartData[player] || !chartData[player].length)) {
     return (
