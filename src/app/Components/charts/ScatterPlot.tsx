@@ -100,8 +100,8 @@ export function ScatterPlot({
                 ${primaryStat.replaceAll('_', ' ')}: ${primaryValue}<br/>
                 ${secondaryStat.replaceAll('_', ' ')}: ${secondaryValue}
               `)
-              .style('left', (event.clientX + 5) + 'px')
-              .style('top', (event.clientY + 5) + 'px');
+              .style('left', event.clientX + 'px')
+              .style('top', event.clientY + 'px');
           }
         })
         .on('mouseout', function() {
@@ -137,8 +137,8 @@ export function ScatterPlot({
                 ${primaryStat.replaceAll('_', ' ')}: ${primaryValue}<br/>
                 ${secondaryStat.replaceAll('_', ' ')}: ${secondaryValue}
               `)
-              .style('left', (event.clientX + 5) + 'px')
-              .style('top', (event.clientY + 5) + 'px');
+              .style('left', event.clientX + 'px')
+              .style('top', event.clientY + 'px');
           }
         })
         .on('mouseout', function() {
@@ -262,7 +262,8 @@ export function ScatterPlot({
           zIndex: 1000,
           whiteSpace: 'nowrap',
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          border: '1px solid rgba(0,0,0,0.1)'
+          border: '1px solid rgba(0,0,0,0.1)',
+          transform: 'translate(-100%, -100%)'
         }}
       />
     </div>

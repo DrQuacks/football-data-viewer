@@ -180,8 +180,8 @@ export function LineChart({
                   tooltip
                     .style('opacity', 1)
                     .html(tooltipContent)
-                    .style('left', (event.clientX + 5) + 'px')
-                    .style('top', (event.clientY + 5) + 'px');
+                    .style('left', event.clientX + 'px')
+                    .style('top', event.clientY + 'px');
                 }
               })
               .on('mouseout', function() {
@@ -252,11 +252,11 @@ export function LineChart({
                 tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${displayName}: ${value}<br/>`;
               });
 
-              tooltip
-                .style('opacity', 1)
-                .html(tooltipContent)
-                .style('left', (event.clientX + 5) + 'px')
-                .style('top', (event.clientY + 5) + 'px');
+                          tooltip
+              .style('opacity', 1)
+              .html(tooltipContent)
+              .style('left', event.clientX + 'px')
+              .style('top', event.clientY + 'px');
             }
           })
           .on('mouseout', function() {
@@ -365,7 +365,8 @@ export function LineChart({
           zIndex: 1000,
           whiteSpace: 'nowrap',
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          border: '1px solid rgba(0,0,0,0.1)'
+          border: '1px solid rgba(0,0,0,0.1)',
+          transform: 'translate(-100%, -100%)'
         }}
       />
     </div>

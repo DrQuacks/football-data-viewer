@@ -215,8 +215,30 @@ export const ChartsContainer = () => {
   const toTitleCase = (str: string) =>
     str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));
 
+  // Function to format title with stat type prefix for specific columns
+  const formatTitle = (stat: string) => {
+    const baseName = toTitleCase(stat.replaceAll('_', ' '));
+    
+    // Columns that should have stat type prefix
+    const prefixColumns = [
+      'touchdowns', 'attempts', 'first downs', 'longest', 'success pct'
+    ];
+    
+    // Check if column should have prefix
+    const shouldHavePrefix = prefixColumns.some(prefix => 
+      baseName.toLowerCase().includes(prefix)
+    ) || baseName.toLowerCase().startsWith('yards');
+    
+    if (shouldHavePrefix && appState.statType) {
+      const statTypeCapitalized = appState.statType.charAt(0).toUpperCase() + appState.statType.slice(1);
+      return `${statTypeCapitalized} ${baseName}`;
+    }
+    
+    return baseName;
+  };
+
   const title: string = appState.primaryStat
-    ? toTitleCase(appState.primaryStat.replaceAll('_', ' '))
+    ? formatTitle(appState.primaryStat)
     : "";
 
   // Single unified chart for any number of players
@@ -224,8 +246,8 @@ export const ChartsContainer = () => {
     <div>
       <h1 className="text-center text-3xl">
         {validPlayers.length === 1 
-          ? `${validPlayers[0]} ${title} by Season`
-          : `Grouped ${title} by Season`
+          ? `${validPlayers[0]} ${title}`
+          : `${title}`
         }
       </h1>
       {appState.chartType === "line" ? (
