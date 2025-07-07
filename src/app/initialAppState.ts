@@ -10,6 +10,7 @@ export const initialAppState:AppState = {
     primaryStat:null,
     secondaryStat:null,
     aggregate:null,
+    numberOfPoints:50,
     lastChange:null,
     stateID:1
 }

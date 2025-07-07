@@ -12,6 +12,7 @@ declare global {
         primaryStat:string|null,
         secondaryStat:string|null,
         aggregate:AggregateType|null,
+        numberOfPoints:number|null,
         lastChange:ActionPayload|null,
         stateID:number
     }
@@ -24,7 +25,8 @@ declare global {
         availableYears?:number[]|null,
         primaryStat?:string|null,
         secondaryStat?:string|null,
-        aggregate?:AggregateType|null
+        aggregate?:AggregateType|null,
+        numberOfPoints?:number|null
     }
 
     type StateAction = {

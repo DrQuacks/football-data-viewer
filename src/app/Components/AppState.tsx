@@ -86,6 +86,12 @@ const reducer = (appState:AppState, action:StateAction):AppState => {
             }
             return appState
         }
+        case "update_number_of_points":{
+            if (payload.numberOfPoints || payload.numberOfPoints === null) {
+                return {...appState,numberOfPoints:payload.numberOfPoints,lastChange:payload,stateID:newID}
+            }
+            return appState
+        }
     }
     return appState
 }

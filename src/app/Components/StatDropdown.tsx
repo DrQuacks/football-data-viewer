@@ -6,6 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { AppContext } from "./AppState";
+import { NumberOfPointsDropdown } from "./NumberOfPointsDropdown";
 
 const name = "Stat";
 
@@ -70,6 +71,8 @@ export const StatDropdown = () => {
             </Select>
           </FormControl>
         </div>
+        
+        <NumberOfPointsDropdown />
       </div>
     );
   }
