@@ -69,15 +69,17 @@ export const ChartsContainer = () => {
     const validPlayers = appState.players.filter(p => p.trim());
     if (validPlayers.length === 0 || appState.chartType === "scatter") return;
 
+    if (!appState.statType) return;
+    
     const fetchPromises = validPlayers.map(player =>
-      fetch(`/api/receiving/player-stats?player=${encodeURIComponent(player)}&stat=${encodeURIComponent(appState.primaryStat || "yards")}`)
+      fetch(`/api/${appState.statType}/player-stats?player=${encodeURIComponent(player)}&stat=${encodeURIComponent(appState.primaryStat || "yards")}`)
         .then(res => res.json())
         .then(data => ({ player, data }))
     );
 
     Promise.all(fetchPromises)
       .then(results => {
-        const newData: { [player: string]: { season: number; [key: string]: number }[] } = {};
+        const newData: { [player: string]: PlayerDataPoint[] } = {};
         results.forEach(({ player, data }) => {
           newData[player] = data;
         });
@@ -93,17 +95,17 @@ export const ChartsContainer = () => {
         setYears(uniqueYears);
         dispatch({ type: "update_available_years", payload: { availableYears: uniqueYears } });
       });
-  }, [appState.players, appState.primaryStat, appState.chartType, dispatch]);
+  }, [appState.players, appState.primaryStat, appState.chartType, appState.statType, dispatch]);
 
   // Fetch data for scatter plots (multiple players, two stats)
   useEffect(() => {
-    if (appState.chartType !== "scatter" || !appState.primaryStat || !appState.secondaryStat) return;
+    if (appState.chartType !== "scatter" || !appState.primaryStat || !appState.secondaryStat || !appState.statType) return;
 
     const safeStart: number = appState.startYear || constants.START_YEAR;
     const safeEnd: number = appState.endYear || constants.END_YEAR;
     const aggregate = appState.aggregate || "average";
 
-    fetch(`/api/receiving/scatter-data?primaryStat=${encodeURIComponent(appState.primaryStat)}&secondaryStat=${encodeURIComponent(appState.secondaryStat)}&startYear=${safeStart}&endYear=${safeEnd}&aggregate=${aggregate}`)
+    fetch(`/api/${appState.statType}/scatter-data?primaryStat=${encodeURIComponent(appState.primaryStat)}&secondaryStat=${encodeURIComponent(appState.secondaryStat)}&startYear=${safeStart}&endYear=${safeEnd}&aggregate=${aggregate}`)
       .then((res) => res.json())
       .then((d) => {
         setScatterData(d);
@@ -111,7 +113,7 @@ export const ChartsContainer = () => {
       .catch((error) => {
         console.error('Error fetching scatter data:', error);
       });
-  }, [appState.chartType, appState.primaryStat, appState.secondaryStat, appState.startYear, appState.endYear, appState.aggregate]);
+  }, [appState.chartType, appState.primaryStat, appState.secondaryStat, appState.startYear, appState.endYear, appState.aggregate, appState.statType]);
 
   // Filter data based on selected years
   useEffect(() => {

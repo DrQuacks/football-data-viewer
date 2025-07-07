@@ -27,7 +27,9 @@ export const MultiPlayerDropdown = () => {
         if (appState.endYear) params.append("endYear", appState.endYear.toString());
         if (appState.primaryStat) params.append("stat", appState.primaryStat);
 
-        const res = await fetch(`/api/receiving/players?${params.toString()}`);
+        if (!appState.statType) return;
+        
+        const res = await fetch(`/api/${appState.statType}/players?${params.toString()}`);
         const data = await res.json();
         const names = data.map((row: { player: string }) => row.player);
         setOptions(names);
@@ -39,7 +41,7 @@ export const MultiPlayerDropdown = () => {
     };
 
     loadAllPlayers();
-  }, [appState.startYear, appState.endYear, appState.primaryStat]);
+  }, [appState.startYear, appState.endYear, appState.primaryStat, appState.statType]);
 
   const handlePlayerChange = (playerIndex: number, newValue: string | null) => {
     const newPlayers = [...appState.players];

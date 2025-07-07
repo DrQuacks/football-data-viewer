@@ -14,10 +14,12 @@ export const StatDropdown = () => {
   const [options, setOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("/api/receiving/numeric-columns")
+    if (!appState.statType) return;
+    
+    fetch(`/api/${appState.statType}/numeric-columns`)
       .then((res) => res.json())
       .then((cols) => setOptions(cols));
-  }, []);
+  }, [appState.statType]);
 
   const handlePrimaryStatChange = (event: SelectChangeEvent) => {
     const stat = event.target.value as string;
