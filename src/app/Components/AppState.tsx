@@ -24,7 +24,15 @@ const reducer = (appState:AppState, action:StateAction):AppState => {
         }
         case "update_stat_type":{
             if (payload.statType) {
-                return {...appState,statType:payload.statType,lastChange:payload,stateID:newID}
+                return {
+                    ...appState,
+                    statType: payload.statType,
+                    players: [""], // Reset players
+                    primaryStat: null, // Reset primary stat
+                    secondaryStat: null, // Reset secondary stat
+                    lastChange: payload,
+                    stateID: newID
+                }
             }
             return appState
         }
