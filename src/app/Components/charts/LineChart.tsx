@@ -16,7 +16,7 @@ export function LineChart({
   stat,
   players
 }: {
-  data: { [player: string]: { season: number; [key: string]: number }[] },
+  data: { [player: string]: { season: number; [key: string]: number | string }[] },
   years: number[],
   stat: string,
   players: string[]
@@ -40,7 +40,7 @@ export function LineChart({
         .domain([Math.min(...years), Math.max(...years)])
         .range([margin.left, containerWidth - margin.right]);
 
-      const maxValue = d3.max(Object.values(data).flat(), (d) => d[stat]) || 0;
+      const maxValue = d3.max(Object.values(data).flat(), (d) => Number(d[stat])) || 0;
       const y = d3
         .scaleLinear()
         .domain([0, maxValue * 1.1])
@@ -87,7 +87,7 @@ export function LineChart({
         player,
         data: years.map(year => ({
           year,
-          value: data[player]?.find(d => d.season === year)?.[stat] || 0
+          value: Number(data[player]?.find(d => d.season === year)?.[stat]) || 0
         })).filter(d => d.value > 0) // Only include points with data
       }));
 
@@ -172,7 +172,9 @@ export function LineChart({
                   players.forEach((player, i) => {
                     const playerData = data[player]?.find(d => d.season === pointData.year);
                     const value = playerData ? Number(playerData[stat]).toLocaleString() : 'No data';
-                    tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${player}: ${value}<br/>`;
+                    const team = playerData?.['team'] as string || '';
+                    const displayName = team ? `${player}, ${team}` : player;
+                    tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${displayName}: ${value}<br/>`;
                   });
 
                   tooltip
@@ -245,7 +247,9 @@ export function LineChart({
               players.forEach((player, i) => {
                 const playerData = data[player]?.find(d => d.season === pointData.year);
                 const value = playerData ? Number(playerData[stat]).toLocaleString() : 'No data';
-                tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${player}: ${value}<br/>`;
+                const team = playerData?.['team'] as string || '';
+                const displayName = team ? `${player}, ${team}` : player;
+                tooltipContent += `<span style="color: ${colors[i % colors.length]}">●</span> ${displayName}: ${value}<br/>`;
               });
 
               tooltip

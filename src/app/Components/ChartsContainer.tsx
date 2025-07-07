@@ -7,6 +7,12 @@ import { LineChart } from "./charts/LineChart";
 import { ScatterPlot } from "./charts/ScatterPlot";
 import { constants } from "../constants";
 
+type PlayerDataPoint = {
+  season: number;
+  team?: string;
+  [key: string]: number | string | undefined;
+};
+
 const getNextStepMessage = (appState: AppState): string => {
     if (!appState.chartType) {
         return "Please select a chart type to get started";
@@ -53,8 +59,8 @@ const getNextStepMessage = (appState: AppState): string => {
 
 export const ChartsContainer = () => {
   const { appState, dispatch } = use(AppContext)!;
-  const [originalChartData, setOriginalChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
-  const [chartData, setChartData] = useState<{ [player: string]: { season: number; [key: string]: number }[] }>({});
+  const [originalChartData, setOriginalChartData] = useState<{ [player: string]: PlayerDataPoint[] }>({});
+  const [chartData, setChartData] = useState<{ [player: string]: PlayerDataPoint[] }>({});
   const [scatterData, setScatterData] = useState<{ player: string; [key: string]: number | string }[]>([]);
   const [years, setYears] = useState<number[]>(appState.availableYears);
 

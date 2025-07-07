@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   const query = `
-    SELECT DISTINCT ON (season) season, ${stat}
+    SELECT DISTINCT ON (season) season, ${stat}, team
     FROM receiving_stats
     WHERE player = $1
     ORDER BY season, ${stat} DESC;
