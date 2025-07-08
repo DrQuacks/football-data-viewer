@@ -16,7 +16,12 @@ async function getAllowedStats(client: Client): Promise<string[]> {
 
 export async function GET(req: NextRequest) {
     console.log('req: ',req)
-    const client = new Client();
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get("limit") || "20");
     const offset = parseInt(searchParams.get("offset") || "0");

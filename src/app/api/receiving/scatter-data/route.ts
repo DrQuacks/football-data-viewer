@@ -15,7 +15,12 @@ async function getAllowedStats(client: Client): Promise<string[]> {
 }
 
 export async function GET(req: NextRequest) {
-    const client = new Client();
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
     const { searchParams } = new URL(req.url);
     const primaryStat = searchParams.get("primaryStat");
     const secondaryStat = searchParams.get("secondaryStat");

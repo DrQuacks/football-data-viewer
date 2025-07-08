@@ -1,11 +1,13 @@
-import { NextRequest } from "next/server";
 import { Pool } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const sql = `
     SELECT column_name
     FROM information_schema.columns
