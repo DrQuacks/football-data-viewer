@@ -1,8 +1,14 @@
 import { NextRequest } from 'next/server';
-import { Client } from 'pg';
-import 'dotenv/config';
+import { Pool } from 'pg';
 
-async function getAllowedStats(client: Client): Promise<string[]> {
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+async function getAllowedStats(): Promise<string[]> {
   const sql = `
     SELECT column_name
     FROM information_schema.columns
@@ -10,18 +16,12 @@ async function getAllowedStats(client: Client): Promise<string[]> {
       AND data_type IN ('integer', 'numeric', 'double precision', 'real')
       AND column_name NOT IN ('season', 'age');
   `;
-  const result = await client.query(sql);
+  const result = await pool.query(sql);
   return result.rows.map(r => r.column_name);
 }
 
 export async function GET(req: NextRequest) {
     console.log('req: ',req)
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
-    });
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get("limit") || "20");
     const offset = parseInt(searchParams.get("offset") || "0");
@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
 
 
     try {
-        await client.connect();
 
         // const result = await client.query(
         //     `
@@ -66,7 +65,7 @@ export async function GET(req: NextRequest) {
         const stat = searchParams.get("stat") || "yards"; // default to yards if not provided
 
         // Validate stat to prevent SQL injection
-        const allowedStats = await getAllowedStats(client);
+        const allowedStats = await getAllowedStats();
         if (!allowedStats.includes(stat)) {
         return new Response("Invalid stat column", { status: 400 });
         }
@@ -83,7 +82,7 @@ export async function GET(req: NextRequest) {
 
         params.push(limit, offset);
 
-        const result = await client.query(sql, params);
+        const result = await pool.query(sql, params);
 
         return new Response(JSON.stringify(result.rows), {
             status: 200,
@@ -92,7 +91,5 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         console.error('Error fetching player names:', error);
         return new Response('Internal Server Error', { status: 500 });
-    } finally {
-        await client.end();
     }
 }
