@@ -3,6 +3,12 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
+type PlayerDataPoint = {
+  season: number;
+  team?: string;
+  [key: string]: number | string | undefined;
+};
+
 const colors = ['steelblue', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
 type LineData = {
@@ -16,7 +22,7 @@ export function LineChart({
   stat,
   players
 }: {
-  data: { [player: string]: { season: number; [key: string]: number | string }[] },
+  data: { [player: string]: PlayerDataPoint[] },
   years: number[],
   stat: string,
   players: string[]

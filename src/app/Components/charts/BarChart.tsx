@@ -3,6 +3,12 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
+type PlayerDataPoint = {
+  season: number;
+  team?: string;
+  [key: string]: number | string | undefined;
+};
+
 const colors = ['steelblue', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
 type PlayerData = {
@@ -21,7 +27,7 @@ export function BarChart({
   stat,
   players
 }: {
-  data: { [player: string]: { season: number; [key: string]: number }[] },
+  data: { [player: string]: PlayerDataPoint[] },
   years: number[],
   stat: string,
   players: string[]
@@ -45,7 +51,7 @@ export function BarChart({
         .range([margin.left, containerWidth - margin.right])
         .padding(0.1);
 
-      const maxValue = d3.max(Object.values(data).flat(), (d) => d[stat]) || 0;
+      const maxValue = d3.max(Object.values(data).flat(), (d) => Number(d[stat])) || 0;
       const y = d3
         .scaleLinear()
         .domain([0, maxValue * 1.1])
@@ -98,7 +104,7 @@ export function BarChart({
         year,
         players: players.map(player => ({
           player,
-          value: data[player]?.find(d => d.season === year)?.[stat] || 0
+          value: Number(data[player]?.find(d => d.season === year)?.[stat]) || 0
         }))
       }));
 

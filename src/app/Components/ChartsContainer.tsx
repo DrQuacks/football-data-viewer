@@ -128,7 +128,7 @@ export const ChartsContainer = () => {
     
     if (validPlayers.length > 0 && Object.keys(originalChartData).length > 0) {
       // Filter the originalChartData for all players
-      const filteredData: { [player: string]: { season: number; [key: string]: number }[] } = {};
+      const filteredData: { [player: string]: PlayerDataPoint[] } = {};
       Object.keys(originalChartData).forEach(player => {
         filteredData[player] = originalChartData[player].filter(row => selectedYears.includes(row.season));
       });
