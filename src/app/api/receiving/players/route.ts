@@ -45,8 +45,8 @@ export async function GET(req: NextRequest) {
         const startYear = searchParams.get("startYear");
         const endYear = searchParams.get("endYear");
 
-        let whereClauses = ["player IS NOT NULL", "LOWER(player) LIKE $1"];
-        let params: (string | number)[] = [`%${query}%`];
+        const whereClauses = ["player IS NOT NULL", "LOWER(player) LIKE $1"];
+        const params: (string | number)[] = [`%${query}%`];
         let paramIdx = 2;
 
         if (startYear) {

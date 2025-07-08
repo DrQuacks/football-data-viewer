@@ -68,11 +68,13 @@ export function LineChart({
         svg.select('.x-axis')
           .transition()
           .duration(750)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .call(d3.axisBottom(x).tickFormat(d => Math.round(Number(d)).toString()).ticks(years.length) as any);
 
         svg.select('.y-axis')
           .transition()
           .duration(750)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .call(d3.axisLeft(y) as any);
       }
 
