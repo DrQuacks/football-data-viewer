@@ -31,8 +31,8 @@ export const NumberOfPointsDropdown = () => {
   const options = Array.from({ length: Math.min(maxPoints, 200) }, (_, i) => i + 1);
 
   return (
-    <div className="my-2">
-      <FormControl fullWidth>
+    <div className="my-2 sm:my-3">
+      <FormControl fullWidth size="medium">
         <InputLabel id="number-of-points-dropdown-label">Number of Points</InputLabel>
         <Select
           labelId="number-of-points-dropdown-label"

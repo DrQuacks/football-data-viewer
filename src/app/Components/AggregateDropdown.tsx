@@ -16,8 +16,8 @@ export const AggregateDropdown = () => {
   };
 
   return (
-    <div className="my-2">
-      <FormControl fullWidth>
+    <div className="my-2 sm:my-3">
+      <FormControl fullWidth size="medium">
         <InputLabel id="aggregate-dropdown-label">Aggregate</InputLabel>
         <Select
           labelId="aggregate-dropdown-label"

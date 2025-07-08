@@ -63,11 +63,12 @@ export const MultiPlayerDropdown = () => {
   };
 
   return (
-    <div className="my-2 space-y-2">
+    <div className="my-2 sm:my-3 space-y-2 sm:space-y-3">
       {appState.players.map((player, index) => (
         <div key={index} className="flex items-center space-x-2">
           <Autocomplete
             fullWidth
+            size="medium"
             options={options}
             value={player || null}
             onChange={(e, newValue) => handlePlayerChange(index, newValue)}
@@ -87,6 +88,7 @@ export const MultiPlayerDropdown = () => {
               <TextField
                 {...params}
                 label={`Player ${index + 1}`}
+                size="medium"
               />
             )}
           />
@@ -94,9 +96,9 @@ export const MultiPlayerDropdown = () => {
             <Button
               variant="outlined"
               color="error"
-              size="small"
+              size="medium"
               onClick={() => handleRemovePlayer(index)}
-              sx={{ minWidth: 'auto', px: 1 }}
+              sx={{ minWidth: 'auto', px: 1, py: 1 }}
             >
               −
             </Button>
@@ -108,6 +110,7 @@ export const MultiPlayerDropdown = () => {
         variant="outlined"
         onClick={handleAddPlayer}
         fullWidth
+        size="medium"
       >
         Add Player
       </Button>

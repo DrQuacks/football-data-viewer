@@ -35,8 +35,8 @@ export const StatDropdown = () => {
   // Show two dropdowns for scatter plot, one for other chart types
   if (appState.chartType === "scatter") {
     return (
-      <div className="my-2 space-y-2">
-        <FormControl fullWidth>
+      <div className="my-2 sm:my-3 space-y-2 sm:space-y-3">
+        <FormControl fullWidth size="medium">
           <InputLabel id="primary-stat-dropdown-label">Primary Stat (X-axis)</InputLabel>
           <Select
             labelId="primary-stat-dropdown-label"
@@ -53,8 +53,8 @@ export const StatDropdown = () => {
           </Select>
         </FormControl>
         
-        <div className="mt-2">
-          <FormControl fullWidth>
+        <div className="mt-2 sm:mt-3">
+          <FormControl fullWidth size="medium">
             <InputLabel id="secondary-stat-dropdown-label">Secondary Stat (Y-axis)</InputLabel>
             <Select
               labelId="secondary-stat-dropdown-label"
@@ -79,8 +79,8 @@ export const StatDropdown = () => {
 
   // Single dropdown for other chart types
   return (
-    <div className="my-2">
-      <FormControl fullWidth>
+    <div className="my-2 sm:my-3">
+      <FormControl fullWidth size="medium">
         <InputLabel id="stat-dropdown-label">{name}</InputLabel>
         <Select
           labelId="stat-dropdown-label"

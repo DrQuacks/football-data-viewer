@@ -24,8 +24,8 @@ export const ChartTypeDropdown = () => {
       };
 
   return (
-    <div className='my-2'>
-        <FormControl fullWidth>
+    <div className='my-2 sm:my-3'>
+        <FormControl fullWidth size="medium">
         <InputLabel id="chart-type-select-label">Chart Type</InputLabel>
         <Select
             labelId="chart-type-select-label"

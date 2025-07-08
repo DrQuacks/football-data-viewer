@@ -187,7 +187,7 @@ export const ChartsContainer = () => {
 
     return (
       <div>
-        <h1 className="text-center text-3xl mb-4">
+        <h1 className="text-center text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4">
           {primaryTitle} vs {secondaryTitle} Scatter Plot ({aggregateTitle}) - {safeStart}-{safeEnd}
         </h1>
         <ScatterPlot 
@@ -245,7 +245,7 @@ export const ChartsContainer = () => {
   // Single unified chart for any number of players
   return (
     <div>
-      <h1 className="text-center text-3xl">
+      <h1 className="text-center text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4">
         {validPlayers.length === 1 
           ? `${validPlayers[0]} ${title}`
           : `${title}`

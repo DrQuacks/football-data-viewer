@@ -25,8 +25,8 @@ export function ChartContainer() {
   }, []);
 
   return (
-    <div className='mx-6'>
-      <h1 className='text-center'>Top 10 Receiving Yards - 2024</h1>
+    <div className='mx-2 sm:mx-4 md:mx-6'>
+      <h1 className='text-center text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4'>Top 10 Receiving Yards - 2024</h1>
       <Chart data={data} />
     </div>
   );

@@ -13,7 +13,7 @@ export const Sidebar = () => {
     const {appState} = use(AppContext)!
     
     return (
-        <div className="mx-6">
+        <div className="mx-2 sm:mx-4 md:mx-6 mb-6 lg:mb-0">
             <ChartTypeDropdown/>
             {appState.chartType && (
                 <>

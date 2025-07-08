@@ -23,8 +23,8 @@ export const StatTypeDropdown = () => {
         }
       };
     return (
-        <div className='my-2'>
-        <FormControl fullWidth>
+        <div className='my-2 sm:my-3'>
+        <FormControl fullWidth size="medium">
             <InputLabel id="demo-simple-select-label">{name}</InputLabel>
             <Select
                 labelId="demo-simple-select-label"

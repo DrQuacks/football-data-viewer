@@ -25,8 +25,15 @@ export function Chart({ data }: Props) {
         const rawWidth = svgRef.current ? svgRef.current.parentElement?.clientWidth || 800 : 800; // Default to 800 if no parent width
         const containerWidth = rawWidth
         console.log('container width: ',containerWidth)
-        const height = 600;
-        const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+        
+        // Responsive height based on screen size
+        const isMobile = window.innerWidth < 768;
+        const height = isMobile ? 400 : 600;
+        
+        // Responsive margins based on screen size
+        const margin = isMobile 
+          ? { top: 15, right: 15, bottom: 50, left: 50 }
+          : { top: 20, right: 20, bottom: 60, left: 60 };
 
         const x = d3
         .scaleBand()
@@ -55,18 +62,24 @@ export function Chart({ data }: Props) {
         .attr('width', x.bandwidth())
         .attr('fill', 'steelblue');
 
+        // Responsive axis styling
+        const axisFontSize = isMobile ? '12px' : '14px';
+        
         svg
         .append('g')
         .attr('transform', `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom(x).tickFormat(d => d.split(' ')[0]))
         .selectAll('text')
         .attr('transform', 'rotate(-45)')
-        .style('text-anchor', 'end');
+        .style('text-anchor', 'end')
+        .style('font-size', axisFontSize);
 
         svg
         .append('g')
         .attr('transform', `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y))
+        .selectAll('text')
+        .style('font-size', axisFontSize);
     }
     draw()
     window.addEventListener("resize",draw)
@@ -76,5 +89,5 @@ export function Chart({ data }: Props) {
 
   }, [data]);
 
-  return <svg ref={svgRef} width="100%" height="100%"></svg>;
+  return <svg ref={svgRef} width="100%" height="100%" className="chart-container"></svg>;
 }
