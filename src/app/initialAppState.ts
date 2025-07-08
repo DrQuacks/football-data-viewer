@@ -9,7 +9,7 @@ export const initialAppState:AppState = {
     availableYears:constants.FULL_YEARS,
     primaryStat:null,
     secondaryStat:null,
-    aggregate:null,
+    aggregate:"total",
     numberOfPoints:50,
     lastChange:null,
     stateID:1
